@@ -1,2 +1,2 @@
 # zmcp
-pure Java / zero dependency MCP
+pure Java / zero dependency [MCP](https://modelcontextprotocol.io) implementation
