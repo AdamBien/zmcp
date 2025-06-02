@@ -6,16 +6,7 @@ public record Resource(
     String mimeType
 ) {
     public String toJson() {
-        return String.format(
-            """
-            {
-                "uri": "%s",
-                "name": "%s",
-                "mimeType": "%s"
-            }""",
-            uri(),
-            name(),
-            mimeType()
-        );
+        return String.format("{\"uri\":\"%s\",\"name\":\"%s\",\"mimeType\":\"%s\"}", 
+            uri(), name(), mimeType());
     }
 } 
