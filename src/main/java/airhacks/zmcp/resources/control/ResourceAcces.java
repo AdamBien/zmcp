@@ -1,8 +1,8 @@
-package airhacks.zmcp.control;
+package airhacks.zmcp.resources.control;
 
 import java.util.List;
 
-import airhacks.zmcp.entity.Resource;
+import airhacks.zmcp.resources.entity.Resource;
 
 public interface ResourceAcces {
     

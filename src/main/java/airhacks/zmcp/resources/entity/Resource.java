@@ -1,4 +1,4 @@
-package airhacks.zmcp.entity;
+package airhacks.zmcp.resources.entity;
 
 public record Resource(
     String uri,
