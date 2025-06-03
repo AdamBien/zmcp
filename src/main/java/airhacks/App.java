@@ -10,7 +10,10 @@ import airhacks.zmcp.resources.boundary.StdioTransport;
  *
  * @author airhacks.com
  */
-interface App {
+public interface App {
+
+    String VERSION = "zmcp v2025.06.03.1";
+
 
     static void main(String... args) throws IOException {
         Log.init();

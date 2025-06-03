@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import airhacks.zmcp.resources.control.ResourceAcces;
 import airhacks.zmcp.resources.entity.Resource;
+import airhacks.zmcp.log.boundary.Log;
 
 public class StdioTransport {
     private final BufferedReader reader;
@@ -20,20 +21,25 @@ public class StdioTransport {
     }
 
     public void start() throws IOException {
+        Log.info("Starting StdioTransport");
         while (true) {
             try {
                 var line = reader.readLine();
                 if (line == null) {
+                    Log.info("Received null line, connection closed by client");
                     break;
                 }
                 if (!line.isBlank()) {
+                    Log.info("Received request: " + line);
                     handleRequest(line);
                     writer.flush();
                 }
             } catch (IOException e) {
+                Log.info("Error reading from input: " + e.getMessage());
                 break;
             }
         }
+        Log.info("StdioTransport stopped");
     }
 
     private void handleRequest(String request) {
@@ -41,6 +47,7 @@ public class StdioTransport {
             // Parse the JSON-RPC request
             var jsonRequest = request.trim();
             if (!jsonRequest.startsWith("{") || !jsonRequest.endsWith("}")) {
+                Log.info("Invalid JSON-RPC request format: " + jsonRequest);
                 sendError(null, -32700, "Invalid JSON-RPC request format");
                 return;
             }
@@ -48,9 +55,11 @@ public class StdioTransport {
             // Extract method and id
             var method = extractMethod(jsonRequest);
             var id = extractId(jsonRequest);
+            Log.info("Processing request - method: " + method + ", id: " + id);
 
             // Only allow initialize before initialization
             if (!isInitialized && !"initialize".equals(method)) {
+                Log.info("Server not initialized, rejecting method: " + method);
                 sendError(id, -32002, "Server not initialized");
                 return;
             }
@@ -61,9 +70,13 @@ public class StdioTransport {
                 case "resources/read" -> handleReadResource(id);
                 case "resources/subscribe" -> handleSubscribe(id);
                 case "resources/unsubscribe" -> handleUnsubscribe(id);
-                default -> sendError(id, -32601, "Method not found: " + method);
+                default -> {
+                    Log.info("Method not found: " + method);
+                    sendError(id, -32601, "Method not found: " + method);
+                }
             }
         } catch (Exception e) {
+            Log.info("Error handling request: " + e.getMessage());
             sendError(null, -32603, e.getMessage());
         }
     }
@@ -72,70 +85,80 @@ public class StdioTransport {
         var protocolVersion = extractValue(jsonRequest, "protocolVersion");
         var clientName = extractValue(jsonRequest, "name");
         var clientVersion = extractValue(jsonRequest, "version");
+        Log.info("Initializing with protocol version: " + protocolVersion + ", client: " + clientName + " " + clientVersion);
 
         var response = """
-                {
-                    "jsonrpc": "2.0",
-                    "id": %d,
-                    "result": {
-                        "serverInfo": {
-                            "name": "zmcp",
-                            "version": "0.0.1"
-                        },
-                        "capabilities": {
-                            "resources": {}
-                        }
+            {
+                "jsonrpc": "2.0",
+                "id": %d,
+                "result": {
+                    "serverInfo": {
+                        "name": "zmcp",
+                        "version": "0.0.1"
+                    },
+                    "capabilities": {
+                        "resources": {}
                     }
-                }"""
-                .formatted(id)
-                .replaceAll("\\s+", "");
+                }
+            }"""
+            .formatted(id)
+            .replaceAll("\\s+", "");
+        Log.info("Sending initialize response: " + response);
         writer.println(response);
         writer.flush();
         isInitialized = true;
     }
 
     private void handleListResources(Integer id) {
+        Log.info("Handling list resources request");
         var resources = ResourceAcces.listResources();
         var resourcesJson = resources.stream()
-                .map(Resource::toJson)
-                .collect(Collectors.joining(","));
-
+            .map(Resource::toJson)
+            .collect(Collectors.joining(","));
+            
         var response = """
-                {
-                    "jsonrpc": "2.0",
-                    "id": %d,
-                    "result": {
-                        "resources": [%s]
-                    }
-                }""".formatted(id, resourcesJson)
-                .replaceAll("\\s+", "");
+            {
+                "jsonrpc": "2.0",
+                "id": %d,
+                "result": {
+                    "resources": [%s]
+                }
+            }"""
+            .formatted(id, resourcesJson)
+            .replaceAll("\\s+", "");
+        Log.info("Sending list resources response: " + response);
         writer.println(response);
         writer.flush();
     }
 
     private void handleReadResource(Integer id) {
+        Log.info("Handling read resource request");
         sendError(id, -32601, "Method not implemented yet");
     }
 
     private void handleSubscribe(Integer id) {
+        Log.info("Handling subscribe request");
         sendError(id, -32601, "Method not implemented yet");
     }
 
     private void handleUnsubscribe(Integer id) {
+        Log.info("Handling unsubscribe request");
         sendError(id, -32601, "Method not implemented yet");
     }
 
     private void sendError(Integer id, int code, String message) {
         var response = """
-                {
-                    "jsonrpc": "2.0",
-                    "id": %s,
-                    "error": {
-                        "code": %d,
-                        "message": "%s"
-                    }
-                }""".formatted(id == null ? "null" : id, code, message)
-                .replaceAll("\\s+", "");
+            {
+                "jsonrpc": "2.0",
+                "id": %s,
+                "error": {
+                    "code": %d,
+                    "message": "%s"
+                }
+            }"""
+            .formatted(id == null ? "null" : id, code, message)
+            .replaceAll("\\s+", "");
+        Log.info("Sending error response: " + response);
         writer.println(response);
         writer.flush();
     }
