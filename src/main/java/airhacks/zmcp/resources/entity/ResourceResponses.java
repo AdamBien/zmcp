@@ -34,8 +34,7 @@ public interface ResourceResponses {
                     }
                 }
             }"""
-            .formatted(id)
-            .replaceAll("\\s+", "");
+            .formatted(id);
     }
 
     static String initialized() {
@@ -44,8 +43,7 @@ public interface ResourceResponses {
                 "jsonrpc": "2.0",
                 "method": "initialized",
                 "params": {}
-            }"""
-            .replaceAll("\\s+", "");
+            }""";
     }
 
     static String listResources(Integer id, String resourcesJson) {

@@ -35,11 +35,12 @@ public class StdioTransport {
                         Log.info("Connection closed by client");
                         break;
                     }
-                    if (!line.isBlank()) {
-                        Log.info("Received request: " + line);
-                        handleRequest(line);
-                        writer.flush();
+                    if (line.isBlank()) {
+                        continue;
                     }
+                    Log.info("Received request: " + line);
+                    handleRequest(line);
+                    writer.flush();
                 } catch (IOException e) {
                     Log.error("Error reading from input: " + e.getMessage());
                     break;
@@ -117,6 +118,10 @@ public class StdioTransport {
             Log.info("Initializing with protocol version: %s, client: %s %s".formatted(
                 protocolVersion, clientName, clientVersion));
 
+            // Validate protocol version
+            if (!"2025-03-26".equals(protocolVersion)) {
+                Log.error("Unsupported protocol version: " + protocolVersion);
+            }
 
             // Send initialize response
             var initializeResponse = ResourceResponses.initialize(id);
