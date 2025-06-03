@@ -108,6 +108,7 @@ public class StdioTransport {
     }
 
     void handleInitialize(Integer id, JSONObject json) {
+        Log.info("Handling initialize request: " + json);
         try {
             var params = json.getJSONObject("params");
             var protocolVersion = params.getString("protocolVersion");
@@ -178,6 +179,7 @@ public class StdioTransport {
 
     void write(String message) {
         var strippedMessage = message.replaceAll("\\s+", "");
+        Log.info("writing message: " + strippedMessage);
         writer.println(strippedMessage);
         writer.flush();
     }
