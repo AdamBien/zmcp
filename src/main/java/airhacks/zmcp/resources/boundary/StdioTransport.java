@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Arrays;
 
 import airhacks.zmcp.resources.control.ResourceAcces;
 import airhacks.zmcp.resources.entity.Resource;
@@ -81,6 +84,7 @@ public class StdioTransport {
 
             switch (method) {
                 case "initialize" -> handleInitialize(id, jsonRequest);
+                case "initialized" -> handleInitialized();
                 case "resources/list" -> handleListResources(id);
                 case "resources/read" -> handleReadResource(id);
                 case "resources/subscribe" -> handleSubscribe(id);
@@ -98,9 +102,18 @@ public class StdioTransport {
 
     private void handleInitialize(Integer id, String jsonRequest) {
         var protocolVersion = extractValue(jsonRequest, "protocolVersion");
-        var clientName = extractValue(jsonRequest, "name");
-        var clientVersion = extractValue(jsonRequest, "version");
+        var clientName = extractValue(jsonRequest, "clientInfo.name");
+        var clientVersion = extractValue(jsonRequest, "clientInfo.version");
         Log.info("Initializing with protocol version: %s, client: %s %s".formatted(protocolVersion, clientName, clientVersion));
+
+        // Validate protocol version
+        if (!"2025-03-26".equals(protocolVersion)) {
+            sendError(id, -32602, "Unsupported protocol version", Map.of(
+                "supported", List.of("2025-03-26"),
+                "requested", protocolVersion
+            ));
+            return;
+        }
 
         var response = """
             {
@@ -134,11 +147,29 @@ public class StdioTransport {
                     }
                 }
             }"""
-            .formatted(id);
+            .formatted(id)
+            .replaceAll("\\s+", "");
         Log.info("Sending initialize response");
         writer.println(response);
         writer.flush();
         isInitialized = true;
+
+        // Send initialized notification
+        var initialized = """
+            {
+                "jsonrpc": "2.0",
+                "method": "initialized",
+                "params": {}
+            }"""
+            .replaceAll("\\s+", "");
+        Log.info("Sending initialized notification");
+        writer.println(initialized);
+        writer.flush();
+    }
+
+    private void handleInitialized() {
+        Log.info("Client sent initialized notification");
+        // No response needed for notifications
     }
 
     private void handleListResources(Integer id) {
@@ -158,7 +189,7 @@ public class StdioTransport {
             }"""
             .formatted(id, resourcesJson)
             .replaceAll("\\s+", "");
-        Log.info("Sending list resources response: " + response);
+        Log.info("Sending list resources response");
         writer.println(response);
         writer.flush();
     }
@@ -179,18 +210,48 @@ public class StdioTransport {
     }
 
     private void sendError(Integer id, int code, String message) {
+        sendError(id, code, message, null);
+    }
+
+    private void sendError(Integer id, int code, String message, Map<String, Object> data) {
+        var error = new StringBuilder();
+        error.append("{\"code\":").append(code).append(",\"message\":\"").append(message).append("\"");
+        if (data != null) {
+            error.append(",\"data\":{");
+            var entries = data.entrySet().iterator();
+            while (entries.hasNext()) {
+                var entry = entries.next();
+                error.append("\"").append(entry.getKey()).append("\":");
+                if (entry.getValue() instanceof String) {
+                    error.append("\"").append(entry.getValue()).append("\"");
+                } else if (entry.getValue() instanceof List) {
+                    var list = (List<?>) entry.getValue();
+                    error.append("[");
+                    for (int i = 0; i < list.size(); i++) {
+                        if (i > 0) error.append(",");
+                        error.append("\"").append(list.get(i)).append("\"");
+                    }
+                    error.append("]");
+                } else {
+                    error.append(entry.getValue());
+                }
+                if (entries.hasNext()) {
+                    error.append(",");
+                }
+            }
+            error.append("}");
+        }
+        error.append("}");
+
         var response = """
             {
                 "jsonrpc": "2.0",
                 "id": %s,
-                "error": {
-                    "code": %d,
-                    "message": "%s"
-                }
+                "error": %s
             }"""
-            .formatted(id == null ? "null" : id, code, message)
+            .formatted(id == null ? "null" : id, error)
             .replaceAll("\\s+", "");
-        Log.info("Sending error response: " + response);
+        Log.info("Sending error response");
         writer.println(response);
         writer.flush();
     }
@@ -234,17 +295,34 @@ public class StdioTransport {
     }
 
     private String extractValue(String jsonRequest, String key) {
-        var keyIndex = jsonRequest.indexOf("\"" + key + "\":\"");
+        var parts = key.split("\\.");
+        var currentKey = parts[0];
+        var keyIndex = jsonRequest.indexOf("\"" + currentKey + "\":");
         if (keyIndex == -1) {
-            Log.error("Key not found in request: " + key);
+            Log.error("Key not found in request: " + currentKey);
             return "";
         }
-        var start = keyIndex + key.length() + 4;
-        var end = jsonRequest.indexOf("\"", start);
+        var start = keyIndex + currentKey.length() + 3;
+        var end = jsonRequest.indexOf(",", start);
         if (end == -1) {
-            Log.error("Invalid value format for key: " + key);
+            end = jsonRequest.indexOf("}", start);
+        }
+        if (end == -1) {
+            Log.error("Invalid value format for key: " + currentKey);
             return "";
         }
-        return jsonRequest.substring(start, end);
+        var value = jsonRequest.substring(start, end).trim();
+        
+        // Handle nested keys
+        if (parts.length > 1) {
+            var remainingKey = String.join(".", Arrays.copyOfRange(parts, 1, parts.length));
+            return extractValue(value, remainingKey);
+        }
+        
+        // Remove quotes if present
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+            value = value.substring(1, value.length() - 1);
+        }
+        return value;
     }
 }
