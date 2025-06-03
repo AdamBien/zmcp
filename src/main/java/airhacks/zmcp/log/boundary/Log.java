@@ -10,16 +10,18 @@ import java.nio.file.StandardOpenOption;
  */
 public interface Log {
 
+    static final Path LOG_FILE = Path.of("zmcp.log");
+
     static void init(){
         try {
-            Files.writeString(Path.of("zmcp.log"),  "zmcp started \n", StandardOpenOption.CREATE);
+            Files.writeString(LOG_FILE,  "zmcp started \n", StandardOpenOption.CREATE);
         } catch (IOException e) {
         }
     }
     
     static void info(String message){
         try {
-            Files.writeString(Path.of("zmcp.log"), message + "\n", StandardOpenOption.APPEND);
+            Files.writeString(LOG_FILE, message + "\n", StandardOpenOption.APPEND);
         } catch (IOException e) {
         }
     }
