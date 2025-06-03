@@ -71,7 +71,20 @@ public class StdioTransport {
         var clientName = extractValue(jsonRequest, "name");
         var clientVersion = extractValue(jsonRequest, "version");
 
-        var response = String.format("{\"jsonrpc\":\"2.0\",\"id\":%d,\"result\":{\"serverInfo\":{\"name\":\"zmcp\",\"version\":\"0.0.1\"},\"capabilities\":{\"resources\":{}}}}", id);
+        var response = """
+            {
+                "jsonrpc": "2.0",
+                "id": %d,
+                "result": {
+                    "serverInfo": {
+                        "name": "zmcp",
+                        "version": "0.0.1"
+                    },
+                    "capabilities": {
+                        "resources": {}
+                    }
+                }
+            }""".formatted(id);
         writer.println(response);
         isInitialized = true;
     }
@@ -82,7 +95,14 @@ public class StdioTransport {
             .map(Resource::toJson)
             .collect(Collectors.joining(","));
             
-        var response = String.format("{\"jsonrpc\":\"2.0\",\"id\":%d,\"result\":{\"resources\":[%s]}}", id, resourcesJson);
+        var response = """
+            {
+                "jsonrpc": "2.0",
+                "id": %d,
+                "result": {
+                    "resources": [%s]
+                }
+            }""".formatted(id, resourcesJson);
         writer.println(response);
     }
 
