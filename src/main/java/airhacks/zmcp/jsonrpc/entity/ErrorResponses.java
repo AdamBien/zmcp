@@ -17,8 +17,7 @@ public interface ErrorResponses {
                                 "requested": "%s"
                 }
                         }"""
-                .formatted(id, message,supported,requested)
-                .replaceAll("\\s+", "");
+                .formatted(id, message,supported,requested);
     }
 
     static String error(int id, int code, String message) {
@@ -31,7 +30,6 @@ public interface ErrorResponses {
                     "message": "%s"
                 }
             }"""
-            .formatted(id, code, message)
-            .replaceAll("\\s+", "");
+            .formatted(id, code, message);
     }
 }

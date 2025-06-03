@@ -177,7 +177,8 @@ public class StdioTransport {
     }
 
     void write(String message) {
-        writer.println(message);
+        var strippedMessage = message.replaceAll("\\s+", "");
+        writer.println(strippedMessage);
         writer.flush();
     }
 }
