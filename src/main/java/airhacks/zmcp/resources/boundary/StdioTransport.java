@@ -12,6 +12,7 @@ import airhacks.zmcp.resources.entity.Resource;
 public class StdioTransport {
     private final BufferedReader reader;
     private final PrintWriter writer;
+    private boolean isInitialized = false;
 
     public StdioTransport() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
@@ -20,11 +21,15 @@ public class StdioTransport {
 
     public void start() throws IOException {
         while (true) {
-            var line = reader.readLine();
-            if (line == null) {
+            try {
+                var line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                handleRequest(line);
+            } catch (IOException e) {
                 break;
             }
-            handleRequest(line);
         }
     }
 
@@ -41,8 +46,14 @@ public class StdioTransport {
             var method = extractMethod(jsonRequest);
             var id = extractId(jsonRequest);
 
+            // Only allow initialize before initialization
+            if (!isInitialized && !"initialize".equals(method)) {
+                sendError(id, -32002, "Server not initialized");
+                return;
+            }
+
             switch (method) {
-                case "initialize" -> handleInitialize(id);
+                case "initialize" -> handleInitialize(id, jsonRequest);
                 case "resources/list" -> handleListResources(id);
                 case "resources/read" -> handleReadResource(id);
                 case "resources/subscribe" -> handleSubscribe(id);
@@ -54,22 +65,15 @@ public class StdioTransport {
         }
     }
 
-    private void handleInitialize(Integer id) {
-        var response = """
-            {
-                "jsonrpc": "2.0",
-                "id": %d,
-                "result": {
-                    "serverInfo": {
-                        "name": "zmcp",
-                        "version": "0.0.1"
-                    },
-                    "capabilities": {
-                        "resources": {}
-                    }
-                }
-            }""".formatted(id);
+    private void handleInitialize(Integer id, String jsonRequest) {
+        // Extract protocol version and client info
+        var protocolVersion = extractValue(jsonRequest, "protocolVersion");
+        var clientName = extractValue(jsonRequest, "name");
+        var clientVersion = extractValue(jsonRequest, "version");
+
+        var response = String.format("{\"jsonrpc\":\"2.0\",\"id\":%d,\"result\":{\"serverInfo\":{\"name\":\"zmcp\",\"version\":\"0.0.1\"},\"capabilities\":{\"resources\":{}}}}", id);
         writer.println(response);
+        isInitialized = true;
     }
 
     private void handleListResources(Integer id) {
@@ -78,14 +82,7 @@ public class StdioTransport {
             .map(Resource::toJson)
             .collect(Collectors.joining(","));
             
-        var response = """
-            {
-                "jsonrpc": "2.0",
-                "id": %d,
-                "result": {
-                    "resources": [%s]
-                }
-            }""".formatted(id, resourcesJson);
+        var response = String.format("{\"jsonrpc\":\"2.0\",\"id\":%d,\"result\":{\"resources\":[%s]}}", id, resourcesJson);
         writer.println(response);
     }
 
@@ -102,20 +99,12 @@ public class StdioTransport {
     }
 
     private void sendError(Integer id, int code, String message) {
-        var response = """
-            {
-                "jsonrpc": "2.0",
-                "id": %s,
-                "error": {
-                    "code": %d,
-                    "message": "%s"
-                }
-            }""".formatted(id == null ? "null" : id, code, message);
+        var response = String.format("{\"jsonrpc\":\"2.0\",\"id\":%s,\"error\":{\"code\":%d,\"message\":\"%s\"}}", 
+            id == null ? "null" : id, code, message);
         writer.println(response);
     }
 
     private String extractMethod(String jsonRequest) {
-        // Simple extraction - in production, use a proper JSON parser
         var methodIndex = jsonRequest.indexOf("\"method\":\"");
         if (methodIndex == -1) return "";
         var start = methodIndex + 10;
@@ -124,12 +113,19 @@ public class StdioTransport {
     }
 
     private Integer extractId(String jsonRequest) {
-        // Simple extraction - in production, use a proper JSON parser
         var idIndex = jsonRequest.indexOf("\"id\":");
         if (idIndex == -1) return null;
         var start = idIndex + 5;
         var end = jsonRequest.indexOf(",", start);
         if (end == -1) end = jsonRequest.indexOf("}", start);
         return Integer.parseInt(jsonRequest.substring(start, end).trim());
+    }
+
+    private String extractValue(String jsonRequest, String key) {
+        var keyIndex = jsonRequest.indexOf("\"" + key + "\":\"");
+        if (keyIndex == -1) return "";
+        var start = keyIndex + key.length() + 4;
+        var end = jsonRequest.indexOf("\"", start);
+        return jsonRequest.substring(start, end);
     }
 } 
