@@ -74,19 +74,21 @@ public class StdioTransport {
         var clientVersion = extractValue(jsonRequest, "version");
 
         var response = """
-            {
-                "jsonrpc": "2.0",
-                "id": %d,
-                "result": {
-                    "serverInfo": {
-                        "name": "zmcp",
-                        "version": "0.0.1"
-                    },
-                    "capabilities": {
-                        "resources": {}
+                {
+                    "jsonrpc": "2.0",
+                    "id": %d,
+                    "result": {
+                        "serverInfo": {
+                            "name": "zmcp",
+                            "version": "0.0.1"
+                        },
+                        "capabilities": {
+                            "resources": {}
+                        }
                     }
-                }
-            }""".formatted(id).replaceAll("\\s+", "");
+                }"""
+                .formatted(id)
+                .replaceAll("\\s+", "");
         writer.println(response);
         writer.flush();
         isInitialized = true;
@@ -95,17 +97,18 @@ public class StdioTransport {
     private void handleListResources(Integer id) {
         var resources = ResourceAcces.listResources();
         var resourcesJson = resources.stream()
-            .map(Resource::toJson)
-            .collect(Collectors.joining(","));
-            
+                .map(Resource::toJson)
+                .collect(Collectors.joining(","));
+
         var response = """
-            {
-                "jsonrpc": "2.0",
-                "id": %d,
-                "result": {
-                    "resources": [%s]
-                }
-            }""".formatted(id, resourcesJson).replaceAll("\\s+", "");
+                {
+                    "jsonrpc": "2.0",
+                    "id": %d,
+                    "result": {
+                        "resources": [%s]
+                    }
+                }""".formatted(id, resourcesJson)
+                .replaceAll("\\s+", "");
         writer.println(response);
         writer.flush();
     }
@@ -124,21 +127,23 @@ public class StdioTransport {
 
     private void sendError(Integer id, int code, String message) {
         var response = """
-            {
-                "jsonrpc": "2.0",
-                "id": %s,
-                "error": {
-                    "code": %d,
-                    "message": "%s"
-                }
-            }""".formatted(id == null ? "null" : id, code, message).replaceAll("\\s+", "");
+                {
+                    "jsonrpc": "2.0",
+                    "id": %s,
+                    "error": {
+                        "code": %d,
+                        "message": "%s"
+                    }
+                }""".formatted(id == null ? "null" : id, code, message)
+                .replaceAll("\\s+", "");
         writer.println(response);
         writer.flush();
     }
 
     private String extractMethod(String jsonRequest) {
         var methodIndex = jsonRequest.indexOf("\"method\":\"");
-        if (methodIndex == -1) return "";
+        if (methodIndex == -1)
+            return "";
         var start = methodIndex + 10;
         var end = jsonRequest.indexOf("\"", start);
         return jsonRequest.substring(start, end);
@@ -146,18 +151,21 @@ public class StdioTransport {
 
     private Integer extractId(String jsonRequest) {
         var idIndex = jsonRequest.indexOf("\"id\":");
-        if (idIndex == -1) return null;
+        if (idIndex == -1)
+            return null;
         var start = idIndex + 5;
         var end = jsonRequest.indexOf(",", start);
-        if (end == -1) end = jsonRequest.indexOf("}", start);
+        if (end == -1)
+            end = jsonRequest.indexOf("}", start);
         return Integer.parseInt(jsonRequest.substring(start, end).trim());
     }
 
     private String extractValue(String jsonRequest, String key) {
         var keyIndex = jsonRequest.indexOf("\"" + key + "\":\"");
-        if (keyIndex == -1) return "";
+        if (keyIndex == -1)
+            return "";
         var start = keyIndex + key.length() + 4;
         var end = jsonRequest.indexOf("\"", start);
         return jsonRequest.substring(start, end);
     }
-} 
+}
