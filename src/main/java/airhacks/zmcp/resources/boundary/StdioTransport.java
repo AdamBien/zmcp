@@ -35,7 +35,7 @@ public class StdioTransport {
                     writer.flush();
                 }
             } catch (IOException e) {
-                Log.info("Error reading from input: " + e.getMessage());
+                Log.error("Error reading from input: " + e.getMessage());
                 break;
             }
         }
@@ -44,10 +44,16 @@ public class StdioTransport {
 
     private void handleRequest(String request) {
         try {
+            if (request == null) {
+                Log.error("Received null request");
+                sendError(null, -32700, "Invalid request: null");
+                return;
+            }
+
             // Parse the JSON-RPC request
             var jsonRequest = request.trim();
             if (!jsonRequest.startsWith("{") || !jsonRequest.endsWith("}")) {
-                Log.info("Invalid JSON-RPC request format: " + jsonRequest);
+                Log.error("Invalid JSON-RPC request format: " + jsonRequest);
                 sendError(null, -32700, "Invalid JSON-RPC request format");
                 return;
             }
@@ -59,7 +65,7 @@ public class StdioTransport {
 
             // Only allow initialize before initialization
             if (!isInitialized && !"initialize".equals(method)) {
-                Log.info("Server not initialized, rejecting method: " + method);
+                Log.error("Server not initialized, rejecting method: " + method);
                 sendError(id, -32002, "Server not initialized");
                 return;
             }
@@ -71,13 +77,13 @@ public class StdioTransport {
                 case "resources/subscribe" -> handleSubscribe(id);
                 case "resources/unsubscribe" -> handleUnsubscribe(id);
                 default -> {
-                    Log.info("Method not found: " + method);
+                    Log.error("Method not found: " + method);
                     sendError(id, -32601, "Method not found: " + method);
                 }
             }
         } catch (Exception e) {
-            Log.info("Error handling request: " + e.getMessage());
-            sendError(null, -32603, e.getMessage());
+            Log.error("Error handling request: " + e.getMessage());
+            sendError(null, -32603, "Internal error: " + e.getMessage());
         }
     }
 
@@ -165,30 +171,54 @@ public class StdioTransport {
 
     private String extractMethod(String jsonRequest) {
         var methodIndex = jsonRequest.indexOf("\"method\":\"");
-        if (methodIndex == -1)
+        if (methodIndex == -1) {
+            Log.error("Method not found in request");
             return "";
+        }
         var start = methodIndex + 10;
         var end = jsonRequest.indexOf("\"", start);
+        if (end == -1) {
+            Log.error("Invalid method format in request");
+            return "";
+        }
         return jsonRequest.substring(start, end);
     }
 
     private Integer extractId(String jsonRequest) {
         var idIndex = jsonRequest.indexOf("\"id\":");
-        if (idIndex == -1)
+        if (idIndex == -1) {
+            Log.error("ID not found in request");
             return null;
+        }
         var start = idIndex + 5;
         var end = jsonRequest.indexOf(",", start);
-        if (end == -1)
+        if (end == -1) {
             end = jsonRequest.indexOf("}", start);
-        return Integer.parseInt(jsonRequest.substring(start, end).trim());
+        }
+        if (end == -1) {
+            Log.error("Invalid ID format in request");
+            return null;
+        }
+        try {
+            return Integer.parseInt(jsonRequest.substring(start, end).trim());
+        } catch (NumberFormatException e) {
+            Log.error("Invalid ID format: " + jsonRequest.substring(start, end));
+            return null;
+        }
     }
 
     private String extractValue(String jsonRequest, String key) {
         var keyIndex = jsonRequest.indexOf("\"" + key + "\":\"");
-        if (keyIndex == -1)
+        if (keyIndex == -1) {
+            Log.error("Key not found in request: " + key);
             return "";
+        }
         var start = keyIndex + key.length() + 4;
         var end = jsonRequest.indexOf("\"", start);
+        if (end == -1) {
+            Log.error("Invalid value format for key: " + key);
+            return "";
+        }
         return jsonRequest.substring(start, end);
     }
 }
