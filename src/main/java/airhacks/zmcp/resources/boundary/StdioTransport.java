@@ -114,6 +114,13 @@ public class StdioTransport {
                                 "text/markdown",
                                 "application/json"
                             ]
+                        },
+                        "roots": {
+                            "list": true,
+                            "listChanged": true
+                        },
+                        "sampling": {
+                            "enabled": true
                         }
                     }
                 }
