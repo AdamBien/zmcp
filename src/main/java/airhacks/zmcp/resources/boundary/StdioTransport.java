@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import airhacks.zmcp.resources.control.ResourceAcces;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
+import airhacks.zmcp.jsonrpc.entity.ErrorResponses;
 import airhacks.zmcp.log.boundary.Log;
 
 public class StdioTransport {
@@ -107,20 +108,10 @@ public class StdioTransport {
         var clientVersion = extractValue(jsonRequest, "clientInfo.version");
         Log.info("Initializing with protocol version: %s, client: %s %s".formatted(protocolVersion, clientName, clientVersion));
 
-        // Validate protocol version
-        if (!"2025-03-26".equals(protocolVersion)) {
-            sendError(id, -32602, "Unsupported protocol version", Map.of(
-                "supported", List.of("2025-03-26"),
-                "requested", protocolVersion
-            ));
-            return;
-        }
-
         Log.info("Sending initialize response");
         writer.println(ResourceResponses.initialize(id));
         writer.flush();
         isInitialized = true;
-
         Log.info("Sending initialized notification");
         writer.println(ResourceResponses.initialized());
         writer.flush();
@@ -158,13 +149,10 @@ public class StdioTransport {
         sendError(id, -32601, "Method not implemented yet");
     }
 
-    private void sendError(Integer id, int code, String message) {
-        sendError(id, code, message, null);
-    }
 
-    private void sendError(Integer id, int code, String message, Map<String, Object> data) {
+    private void sendError(Integer id, int code, String message) {
         Log.info("Sending error response");
-        writer.println(ResourceResponses.error(id, code, message, data));
+        writer.println(ErrorResponses.error(id, code, message));
         writer.flush();
     }
 
