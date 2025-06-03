@@ -16,9 +16,9 @@ import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 
 public class StdioTransport {
-    private final BufferedReader reader;
-    private final PrintWriter writer;
-    private boolean isInitialized = false;
+    final BufferedReader reader;
+    final PrintWriter writer;
+    boolean isInitialized = false;
 
     public StdioTransport() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
@@ -57,7 +57,7 @@ public class StdioTransport {
         }
     }
 
-    private void handleRequest(String request) {
+    void handleRequest(String request) {
         Log.info("Handling request: " + request);
         try {
             if (request == null) {
@@ -107,7 +107,7 @@ public class StdioTransport {
         }
     }
 
-    private void handleInitialize(Integer id, JSONObject json) {
+    void handleInitialize(Integer id, JSONObject json) {
         try {
             var params = json.getJSONObject("params");
             var protocolVersion = params.getString("protocolVersion");
@@ -141,11 +141,11 @@ public class StdioTransport {
         }
     }
 
-    private void handleInitialized() {
+    void handleInitialized() {
         Log.info("Client sent initialized notification");
     }
 
-    private void handleListResources(Integer id) {
+    void handleListResources(Integer id) {
         Log.info("Handling list resources request");
         var resources = ResourceAcces.listResources();
         var resourcesJson = resources.stream()
@@ -156,22 +156,22 @@ public class StdioTransport {
         this.write(ResourceResponses.listResources(id, resourcesJson));
     }
 
-    private void handleReadResource(Integer id) {
+    void handleReadResource(Integer id) {
         Log.info("Handling read resource request");
         sendError(id, -32601, "Method not implemented yet");
     }
 
-    private void handleSubscribe(Integer id) {
+    void handleSubscribe(Integer id) {
         Log.info("Handling subscribe request");
         sendError(id, -32601, "Method not implemented yet");
     }
 
-    private void handleUnsubscribe(Integer id) {
+    void handleUnsubscribe(Integer id) {
         Log.info("Handling unsubscribe request");
         sendError(id, -32601, "Method not implemented yet");
     }
 
-    private void sendError(Integer id, int code, String message) {
+    void sendError(Integer id, int code, String message) {
         Log.info("Sending error response");
         this.write(ErrorResponses.error(id, code, message));
     }
