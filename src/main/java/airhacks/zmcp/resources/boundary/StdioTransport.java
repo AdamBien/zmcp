@@ -22,24 +22,33 @@ public class StdioTransport {
 
     public void start() throws IOException {
         Log.info("Starting StdioTransport");
-        while (true) {
-            try {
-                var line = reader.readLine();
-                if (line == null) {
-                    Log.info("Received null line, connection closed by client");
+        try {
+            while (true) {
+                try {
+                    var line = reader.readLine();
+                    if (line == null) {
+                        Log.info("Connection closed by client");
+                        break;
+                    }
+                    if (!line.isBlank()) {
+                        Log.info("Received request: " + line);
+                        handleRequest(line);
+                        writer.flush();
+                    }
+                } catch (IOException e) {
+                    Log.error("Error reading from input: " + e.getMessage());
                     break;
                 }
-                if (!line.isBlank()) {
-                    Log.info("Received request: " + line);
-                    handleRequest(line);
-                    writer.flush();
-                }
-            } catch (IOException e) {
-                Log.error("Error reading from input: " + e.getMessage());
-                break;
             }
+        } finally {
+            Log.info("StdioTransport stopped");
+            try {
+                reader.close();
+            } catch (IOException e) {
+                Log.error("Error closing reader: " + e.getMessage());
+            }
+            writer.close();
         }
-        Log.info("StdioTransport stopped");
     }
 
     private void handleRequest(String request) {
@@ -91,7 +100,7 @@ public class StdioTransport {
         var protocolVersion = extractValue(jsonRequest, "protocolVersion");
         var clientName = extractValue(jsonRequest, "name");
         var clientVersion = extractValue(jsonRequest, "version");
-        Log.info("Initializing with protocol version: " + protocolVersion + ", client: " + clientName + " " + clientVersion);
+        Log.info("Initializing with protocol version: %s, client: %s %s".formatted(protocolVersion, clientName, clientVersion));
 
         var response = """
             {
@@ -125,9 +134,8 @@ public class StdioTransport {
                     }
                 }
             }"""
-            .formatted(id)
-            .replaceAll("\\s+", "");
-        Log.info("Sending initialize response: " + response);
+            .formatted(id);
+        Log.info("Sending initialize response");
         writer.println(response);
         writer.flush();
         isInitialized = true;
