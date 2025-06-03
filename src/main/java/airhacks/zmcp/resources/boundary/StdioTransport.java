@@ -57,6 +57,7 @@ public class StdioTransport {
     }
 
     private void handleRequest(String request) {
+        Log.info("Handling request: " + request);
         try {
             if (request == null) {
                 Log.error("Received null request");
@@ -116,12 +117,20 @@ public class StdioTransport {
             Log.info("Initializing with protocol version: %s, client: %s %s".formatted(
                 protocolVersion, clientName, clientVersion));
 
-            Log.info("Sending initialize response");
-            writer.println(ResourceResponses.initialize(id));
+
+            // Send initialize response
+            var initializeResponse = ResourceResponses.initialize(id);
+            Log.info("Sending initialize response: " + initializeResponse);
+            writer.println(initializeResponse);
             writer.flush();
+
+            // Set initialized flag
             isInitialized = true;
-            Log.info("Sending initialized notification");
-            writer.println(ResourceResponses.initialized());
+
+            // Send initialized notification
+            var initializedNotification = ResourceResponses.initialized();
+            Log.info("Sending initialized notification: " + initializedNotification);
+            writer.println(initializedNotification);
             writer.flush();
         } catch (JSONException e) {
             Log.error("Error parsing initialize request: " + e.getMessage());

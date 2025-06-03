@@ -60,7 +60,4 @@ public interface ResourceResponses {
             .formatted(id, resourcesJson)
             .replaceAll("\\s+", "");
     }
-
-
-
 } 
