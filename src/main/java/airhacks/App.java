@@ -12,7 +12,7 @@ import airhacks.zmcp.resources.boundary.StdioTransport;
  */
 public interface App {
 
-    String VERSION = "zmcp v2025.06.03.12";
+    String VERSION = "zmcp v2025.06.03.13";
 
 
     static void main(String... args) throws IOException {

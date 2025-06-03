@@ -47,6 +47,7 @@ public interface ResourceResponses {
     }
 
     static String listResources(Integer id, String resourcesJson) {
+        var normalizedResourcesJson = resourcesJson.replaceAll("\\s+", "");
         return """
             {
                 "jsonrpc": "2.0",
@@ -55,7 +56,6 @@ public interface ResourceResponses {
                     "resources": [%s]
                 }
             }"""
-            .formatted(id, resourcesJson)
-            .replaceAll("\\s+", "");
+            .formatted(id, normalizedResourcesJson);
     }
 } 

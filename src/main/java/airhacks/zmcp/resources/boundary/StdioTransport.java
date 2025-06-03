@@ -126,8 +126,7 @@ public class StdioTransport {
             // Send initialize response
             var initializeResponse = ResourceResponses.initialize(id);
             Log.info("Sending initialize response: " + initializeResponse);
-            writer.println(initializeResponse);
-            writer.flush();
+            this.write(initializeResponse);
 
             // Set initialized flag
             isInitialized = true;
@@ -135,8 +134,7 @@ public class StdioTransport {
             // Send initialized notification
             var initializedNotification = ResourceResponses.initialized();
             Log.info("Sending initialized notification: " + initializedNotification);
-            writer.println(initializedNotification);
-            writer.flush();
+            this.write(initializedNotification);
         } catch (JSONException e) {
             Log.error("Error parsing initialize request: " + e.getMessage());
             sendError(id, -32602, "Invalid params: " + e.getMessage());
@@ -155,8 +153,7 @@ public class StdioTransport {
             .collect(Collectors.joining(","));
             
         Log.info("Sending list resources response");
-        writer.println(ResourceResponses.listResources(id, resourcesJson));
-        writer.flush();
+        this.write(ResourceResponses.listResources(id, resourcesJson));
     }
 
     private void handleReadResource(Integer id) {
@@ -176,7 +173,11 @@ public class StdioTransport {
 
     private void sendError(Integer id, int code, String message) {
         Log.info("Sending error response");
-        writer.println(ErrorResponses.error(id, code, message));
+        this.write(ErrorResponses.error(id, code, message));
+    }
+
+    void write(String message) {
+        writer.println(message);
         writer.flush();
     }
 }

@@ -1,12 +1,16 @@
 package airhacks.zmcp.resources.entity;
 
 public record Resource(
-    String uri,
-    String name,
-    String mimeType
-) {
+        String uri,
+        String name,
+        String mimeType) {
     public String toJson() {
-        return String.format("{\"uri\":\"%s\",\"name\":\"%s\",\"mimeType\":\"%s\"}", 
-            uri(), name(), mimeType());
+        return """
+                {
+                    "uri": "%s",
+                    "name": "%s",
+                    "mimeType": "%s"
+                }""".formatted(uri(), name(), mimeType())
+                .replaceAll("\\s+", "");
     }
-} 
+}
