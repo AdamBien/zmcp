@@ -4,16 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.json.JSONObject;
+import org.json.JSONException;
+
+import airhacks.zmcp.jsonrpc.entity.ErrorResponses;
+import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.ResourceAcces;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
-import airhacks.zmcp.jsonrpc.entity.ErrorResponses;
-import airhacks.zmcp.log.boundary.Log;
 
 public class StdioTransport {
     private final BufferedReader reader;
@@ -72,9 +72,9 @@ public class StdioTransport {
                 return;
             }
 
-            // Extract method and id
-            var method = extractMethod(jsonRequest);
-            var id = extractId(jsonRequest);
+            var json = new JSONObject(jsonRequest);
+            var method = json.optString("method", "");
+            var id = json.optInt("id", -1);
             Log.info("Processing request - method: " + method + ", id: " + id);
 
             // Only allow initialize before initialization
@@ -85,7 +85,7 @@ public class StdioTransport {
             }
 
             switch (method) {
-                case "initialize" -> handleInitialize(id, jsonRequest);
+                case "initialize" -> handleInitialize(id, json);
                 case "initialized" -> handleInitialized();
                 case "resources/list" -> handleListResources(id);
                 case "resources/read" -> handleReadResource(id);
@@ -96,30 +96,41 @@ public class StdioTransport {
                     sendError(id, -32601, "Method not found: " + method);
                 }
             }
+        } catch (JSONException e) {
+            Log.error("Error parsing JSON request: " + e.getMessage());
+            sendError(null, -32700, "Invalid JSON-RPC request format");
         } catch (Exception e) {
             Log.error("Error handling request: " + e.getMessage());
             sendError(null, -32603, "Internal error: " + e.getMessage());
         }
     }
 
-    private void handleInitialize(Integer id, String jsonRequest) {
-        var protocolVersion = extractValue(jsonRequest, "protocolVersion");
-        var clientName = extractValue(jsonRequest, "clientInfo.name");
-        var clientVersion = extractValue(jsonRequest, "clientInfo.version");
-        Log.info("Initializing with protocol version: %s, client: %s %s".formatted(protocolVersion, clientName, clientVersion));
+    private void handleInitialize(Integer id, JSONObject json) {
+        try {
+            var params = json.getJSONObject("params");
+            var protocolVersion = params.getString("protocolVersion");
+            var clientInfo = params.getJSONObject("clientInfo");
+            var clientName = clientInfo.getString("name");
+            var clientVersion = clientInfo.getString("version");
+            
+            Log.info("Initializing with protocol version: %s, client: %s %s".formatted(
+                protocolVersion, clientName, clientVersion));
 
-        Log.info("Sending initialize response");
-        writer.println(ResourceResponses.initialize(id));
-        writer.flush();
-        isInitialized = true;
-        Log.info("Sending initialized notification");
-        writer.println(ResourceResponses.initialized());
-        writer.flush();
+            Log.info("Sending initialize response");
+            writer.println(ResourceResponses.initialize(id));
+            writer.flush();
+            isInitialized = true;
+            Log.info("Sending initialized notification");
+            writer.println(ResourceResponses.initialized());
+            writer.flush();
+        } catch (JSONException e) {
+            Log.error("Error parsing initialize request: " + e.getMessage());
+            sendError(id, -32602, "Invalid params: " + e.getMessage());
+        }
     }
 
     private void handleInitialized() {
         Log.info("Client sent initialized notification");
-        // No response needed for notifications
     }
 
     private void handleListResources(Integer id) {
@@ -149,80 +160,9 @@ public class StdioTransport {
         sendError(id, -32601, "Method not implemented yet");
     }
 
-
     private void sendError(Integer id, int code, String message) {
         Log.info("Sending error response");
         writer.println(ErrorResponses.error(id, code, message));
         writer.flush();
-    }
-
-    private String extractMethod(String jsonRequest) {
-        var methodIndex = jsonRequest.indexOf("\"method\":\"");
-        if (methodIndex == -1) {
-            Log.error("Method not found in request");
-            return "";
-        }
-        var start = methodIndex + 10;
-        var end = jsonRequest.indexOf("\"", start);
-        if (end == -1) {
-            Log.error("Invalid method format in request");
-            return "";
-        }
-        return jsonRequest.substring(start, end);
-    }
-
-    private Integer extractId(String jsonRequest) {
-        var idIndex = jsonRequest.indexOf("\"id\":");
-        if (idIndex == -1) {
-            Log.error("ID not found in request");
-            return null;
-        }
-        var start = idIndex + 5;
-        var end = jsonRequest.indexOf(",", start);
-        if (end == -1) {
-            end = jsonRequest.indexOf("}", start);
-        }
-        if (end == -1) {
-            Log.error("Invalid ID format in request");
-            return null;
-        }
-        try {
-            return Integer.parseInt(jsonRequest.substring(start, end).trim());
-        } catch (NumberFormatException e) {
-            Log.error("Invalid ID format: " + jsonRequest.substring(start, end));
-            return null;
-        }
-    }
-
-    private String extractValue(String jsonRequest, String key) {
-        var parts = key.split("\\.");
-        var currentKey = parts[0];
-        var keyIndex = jsonRequest.indexOf("\"" + currentKey + "\":");
-        if (keyIndex == -1) {
-            Log.error("Key not found in request: " + currentKey);
-            return "";
-        }
-        var start = keyIndex + currentKey.length() + 3;
-        var end = jsonRequest.indexOf(",", start);
-        if (end == -1) {
-            end = jsonRequest.indexOf("}", start);
-        }
-        if (end == -1) {
-            Log.error("Invalid value format for key: " + currentKey);
-            return "";
-        }
-        var value = jsonRequest.substring(start, end).trim();
-        
-        // Handle nested keys
-        if (parts.length > 1) {
-            var remainingKey = String.join(".", Arrays.copyOfRange(parts, 1, parts.length));
-            return extractValue(value, remainingKey);
-        }
-        
-        // Remove quotes if present
-        if (value.startsWith("\"") && value.endsWith("\"")) {
-            value = value.substring(1, value.length() - 1);
-        }
-        return value;
     }
 }
