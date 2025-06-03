@@ -66,7 +66,6 @@ public class StdioTransport {
     }
 
     private void handleInitialize(Integer id, String jsonRequest) {
-        // Extract protocol version and client info
         var protocolVersion = extractValue(jsonRequest, "protocolVersion");
         var clientName = extractValue(jsonRequest, "name");
         var clientVersion = extractValue(jsonRequest, "version");
