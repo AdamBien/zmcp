@@ -103,7 +103,18 @@ public class StdioTransport {
                         "version": "0.0.1"
                     },
                     "capabilities": {
-                        "resources": {}
+                        "resources": {
+                            "list": true,
+                            "read": true,
+                            "subscribe": true,
+                            "unsubscribe": true,
+                            "maxSize": 1048576,
+                            "supportedMimeTypes": [
+                                "text/plain",
+                                "text/markdown",
+                                "application/json"
+                            ]
+                        }
                     }
                 }
             }"""
