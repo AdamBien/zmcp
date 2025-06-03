@@ -26,7 +26,10 @@ public class StdioTransport {
                 if (line == null) {
                     break;
                 }
-                handleRequest(line);
+                if (!line.isBlank()) {
+                    handleRequest(line);
+                    writer.flush();
+                }
             } catch (IOException e) {
                 break;
             }
@@ -85,6 +88,7 @@ public class StdioTransport {
                 }
             }""".formatted(id);
         writer.println(response);
+        writer.flush();
         isInitialized = true;
     }
 
@@ -103,6 +107,7 @@ public class StdioTransport {
                 }
             }""".formatted(id, resourcesJson);
         writer.println(response);
+        writer.flush();
     }
 
     private void handleReadResource(Integer id) {
@@ -118,9 +123,17 @@ public class StdioTransport {
     }
 
     private void sendError(Integer id, int code, String message) {
-        var response = String.format("{\"jsonrpc\":\"2.0\",\"id\":%s,\"error\":{\"code\":%d,\"message\":\"%s\"}}", 
-            id == null ? "null" : id, code, message);
+        var response = """
+            {
+                "jsonrpc": "2.0",
+                "id": %s,
+                "error": {
+                    "code": %d,
+                    "message": "%s"
+                }
+            }""".formatted(id == null ? "null" : id, code, message);
         writer.println(response);
+        writer.flush();
     }
 
     private String extractMethod(String jsonRequest) {
