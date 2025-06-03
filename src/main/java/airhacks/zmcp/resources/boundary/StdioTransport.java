@@ -86,7 +86,7 @@ public class StdioTransport {
                         "resources": {}
                     }
                 }
-            }""".formatted(id);
+            }""".formatted(id).replaceAll("\\s+", "");
         writer.println(response);
         writer.flush();
         isInitialized = true;
@@ -105,7 +105,7 @@ public class StdioTransport {
                 "result": {
                     "resources": [%s]
                 }
-            }""".formatted(id, resourcesJson);
+            }""".formatted(id, resourcesJson).replaceAll("\\s+", "");
         writer.println(response);
         writer.flush();
     }
@@ -131,7 +131,7 @@ public class StdioTransport {
                     "code": %d,
                     "message": "%s"
                 }
-            }""".formatted(id == null ? "null" : id, code, message);
+            }""".formatted(id == null ? "null" : id, code, message).replaceAll("\\s+", "");
         writer.println(response);
         writer.flush();
     }
