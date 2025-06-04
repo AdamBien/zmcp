@@ -3,6 +3,12 @@ package airhacks.zmcp.resources.entity;
 import airhacks.App;
 
 public interface ResourceResponses {
+
+    /**
+     * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle#initialize
+     * @param id
+     * @return
+     */
     static String initialize(Integer id) {
         return """
                 {

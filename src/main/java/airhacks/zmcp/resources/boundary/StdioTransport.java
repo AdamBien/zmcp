@@ -14,6 +14,7 @@ import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.ResourceAcces;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
+import airhacks.zmcp.resources.entity.ResourcesMethods;
 
 /**
  * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle
@@ -62,7 +63,7 @@ public class StdioTransport {
     }
 
     void handleRequest(String request) {
-        Log.request(request);
+        Log.info("Processing request: " + request);
         try {
             if (request == null) {
                 Log.error("Received null request");
@@ -70,7 +71,6 @@ public class StdioTransport {
                 return;
             }
 
-            // Parse the JSON-RPC request
             var jsonRequest = request.trim();
             if (!jsonRequest.startsWith("{") || !jsonRequest.endsWith("}")) {
                 Log.error("Invalid JSON-RPC request format: " + jsonRequest);
@@ -81,31 +81,33 @@ public class StdioTransport {
             var json = new JSONObject(jsonRequest);
             var method = json.optString("method", "");
             var id = json.optInt("id", -1);
-            Log.info("method: " + method + ", id: " + id);
+            Log.info("Processing method: " + method + ", id: " + id);
 
-            if (!isInitialized && !"initialize".equals(method)) {
+            if (!isInitialized && !ResourcesMethods.INITIALIZE.method().equals(method)) {
                 Log.error("Server not initialized, rejecting method: " + method);
                 sendError(id, -32002, "Server not initialized");
                 return;
             }
 
-            switch (method) {
-                case "initialize" -> handleInitialize(id, json);
-                case "initialized" -> handleInitialized();
-                case "resources/list" -> handleListResources(id);
-                case "resources/read" -> handleReadResource(id);
-                case "resources/subscribe" -> handleSubscribe(id);
-                case "resources/unsubscribe" -> handleUnsubscribe(id);
-                default -> {
-                    Log.error("Method not found: " + method);
-                    sendError(id, -32601, "Method not found: " + method);
+            try {
+                var protocol = ResourcesMethods.fromString(method);
+                switch (protocol) {
+                    case INITIALIZE -> handleInitialize(id, json);
+                    case INITIALIZED -> handleInitialized();
+                    case LIST_RESOURCES -> handleListResources(id);
+                    case READ_RESOURCE -> handleReadResource(id);
+                    case SUBSCRIBE -> handleSubscribe(id);
+                    case UNSUBSCRIBE -> handleUnsubscribe(id);
                 }
+            } catch (IllegalArgumentException e) {
+                Log.error("Method not found: " + method);
+                sendError(id, -32601, "Method not found: " + method);
             }
         } catch (JSONException e) {
-            Log.error("Error parsing JSON request: " + e.getMessage());
+            Log.error("Error parsing JSON request: " +e);
             sendError(null, -32700, "Invalid JSON-RPC request format");
         } catch (Exception e) {
-            Log.error("Error handling request: " + e.getMessage());
+            Log.error("Error handling request: " +e);
             sendError(null, -32603, "Internal error: " + e.getMessage());
         }
     }
