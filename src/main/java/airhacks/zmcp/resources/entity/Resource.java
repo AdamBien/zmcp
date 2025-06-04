@@ -10,7 +10,6 @@ public record Resource(
                     "uri": "%s",
                     "name": "%s",
                     "mimeType": "%s"
-                }""".formatted(uri(), name(), mimeType())
-                .replaceAll("\\s+", "");
+                }""".formatted(uri(), name(), mimeType());
     }
 }
