@@ -15,6 +15,9 @@ import airhacks.zmcp.resources.control.ResourceAcces;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 
+/**
+ * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle
+ */
 public class StdioTransport {
     final BufferedReader reader;
     final PrintWriter writer;
@@ -30,19 +33,20 @@ public class StdioTransport {
         try {
             while (true) {
                 try {
+                    Log.info("Waiting for next message...");
                     var line = reader.readLine();
                     if (line == null) {
-                        Log.info("Connection closed by client");
+                        Log.info("Connection closed by client ");
                         break;
                     }
                     if (line.isBlank()) {
+                        Log.info("Received blank line, skipping");
                         continue;
                     }
-                    Log.info("Received request: " + line);
+                    Log.info("Received line: " + line);
                     handleRequest(line);
-                    writer.flush();
                 } catch (IOException e) {
-                    Log.error("Error reading from input: " + e.getMessage());
+                    Log.error("Error reading from input: " + e);
                     break;
                 }
             }
@@ -58,7 +62,7 @@ public class StdioTransport {
     }
 
     void handleRequest(String request) {
-        Log.info("Handling request: " + request);
+        Log.request(request);
         try {
             if (request == null) {
                 Log.error("Received null request");
@@ -77,9 +81,8 @@ public class StdioTransport {
             var json = new JSONObject(jsonRequest);
             var method = json.optString("method", "");
             var id = json.optInt("id", -1);
-            Log.info("Processing request - method: " + method + ", id: " + id);
+            Log.info("method: " + method + ", id: " + id);
 
-            // Only allow initialize before initialization
             if (!isInitialized && !"initialize".equals(method)) {
                 Log.error("Server not initialized, rejecting method: " + method);
                 sendError(id, -32002, "Server not initialized");
@@ -115,27 +118,18 @@ public class StdioTransport {
             var clientInfo = params.getJSONObject("clientInfo");
             var clientName = clientInfo.getString("name");
             var clientVersion = clientInfo.getString("version");
-            
-            Log.info("Initializing with protocol version: %s, client: %s %s".formatted(
-                protocolVersion, clientName, clientVersion));
 
-            // Validate protocol version
+            Log.info("Initializing with protocol version: %s, client: %s %s".formatted(
+                    protocolVersion, clientName, clientVersion));
+
             if (!"2025-03-26".equals(protocolVersion)) {
                 Log.error("Unsupported protocol version: " + protocolVersion);
             }
 
-            // Send initialize response
             var initializeResponse = ResourceResponses.initialize(id);
-            Log.info("Sending initialize response: " + initializeResponse);
             this.write(initializeResponse);
+            this.isInitialized = true;
 
-            // Set initialized flag
-            isInitialized = true;
-
-            // Send initialized notification
-            var initializedNotification = ResourceResponses.initialized();
-            Log.info("Sending initialized notification: " + initializedNotification);
-            this.write(initializedNotification);
         } catch (JSONException e) {
             Log.error("Error parsing initialize request: " + e.getMessage());
             sendError(id, -32602, "Invalid params: " + e.getMessage());
@@ -144,15 +138,16 @@ public class StdioTransport {
 
     void handleInitialized() {
         Log.info("Client sent initialized notification");
+
     }
 
     void handleListResources(Integer id) {
         Log.info("Handling list resources request");
         var resources = ResourceAcces.listResources();
         var resourcesJson = resources.stream()
-            .map(Resource::toJson)
-            .collect(Collectors.joining(","));
-            
+                .map(Resource::toJson)
+                .collect(Collectors.joining(","));
+
         Log.info("Sending list resources response");
         this.write(ResourceResponses.listResources(id, resourcesJson));
     }
@@ -179,8 +174,7 @@ public class StdioTransport {
 
     void write(String message) {
         var strippedMessage = message.replaceAll("\\s+", "");
-        Log.info("writing message: " + strippedMessage);
+        Log.response(strippedMessage);
         writer.println(strippedMessage);
-        writer.flush();
     }
 }
