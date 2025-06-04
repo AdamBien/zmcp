@@ -11,7 +11,7 @@ import org.json.JSONException;
 
 import airhacks.zmcp.jsonrpc.entity.ErrorResponses;
 import airhacks.zmcp.log.boundary.Log;
-import airhacks.zmcp.resources.control.ResourceAcces;
+import airhacks.zmcp.resources.control.ResourceAccess;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 import airhacks.zmcp.resources.entity.ResourcesMethods;
@@ -19,12 +19,12 @@ import airhacks.zmcp.resources.entity.ResourcesMethods;
 /**
  * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle
  */
-public class StdioTransport {
+public class ResourcesProtocol {
     final BufferedReader reader;
     final PrintWriter writer;
     boolean isInitialized = false;
 
-    public StdioTransport() {
+    public ResourcesProtocol() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
         this.writer = new PrintWriter(System.out, true);
     }
@@ -145,7 +145,7 @@ public class StdioTransport {
 
     void handleListResources(Integer id) {
         Log.info("Handling list resources request");
-        var resources = ResourceAcces.listResources();
+        var resources = ResourceAccess.listResources();
         var resourcesJson = resources.stream()
                 .map(Resource::toJson)
                 .collect(Collectors.joining(","));

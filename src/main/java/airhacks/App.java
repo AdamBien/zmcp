@@ -3,7 +3,7 @@ package airhacks;
 import java.io.IOException;
 
 import airhacks.zmcp.log.boundary.Log;
-import airhacks.zmcp.resources.boundary.StdioTransport;
+import airhacks.zmcp.resources.boundary.ResourcesProtocol;
 
 
 /**
@@ -17,7 +17,7 @@ public interface App {
 
     static void main(String... args) throws IOException {
         Log.init();
-        var transport = new StdioTransport();
+        var transport = new ResourcesProtocol();
         transport.start();
     }
 }

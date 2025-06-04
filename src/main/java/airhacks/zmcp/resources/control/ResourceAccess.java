@@ -4,7 +4,7 @@ import java.util.List;
 
 import airhacks.zmcp.resources.entity.Resource;
 
-public interface ResourceAcces {
+public interface ResourceAccess {
     
     static List<Resource> listResources() {
         return List.of(new Resource("file://README.md", "Example Resource", "text/plain"));
