@@ -1,5 +1,7 @@
 package airhacks.zmcp.resources.entity;
 
+import airhacks.App;
+
 public interface ResourceResponses {
     static String initialize(Integer id) {
         return """
@@ -7,17 +9,15 @@ public interface ResourceResponses {
                     "jsonrpc": "2.0",
                     "id": %d,
                     "result": {
+                        "protocolVersion": "2025-03-26",
                         "serverInfo": {
                             "name": "zmcp",
-                            "version": "0.0.1"
+                            "version":"%s"
                         },
                         "capabilities": {
                             "resources": {
                                 "list": true,
                                 "read": true,
-                                "subscribe": true,
-                                "unsubscribe": true,
-                                "maxSize": 1048576,
                                 "supportedMimeTypes": [
                                     "text/plain",
                                     "text/markdown",
@@ -27,14 +27,11 @@ public interface ResourceResponses {
                             "roots": {
                                 "list": true,
                                 "listChanged": true
-                            },
-                            "sampling": {
-                                "enabled": true
                             }
                         }
                     }
                 }"""
-                .formatted(id);
+                .formatted(id,App.VERSION);
     }
 
     static String listResources(Integer id, String resourcesJson) {
