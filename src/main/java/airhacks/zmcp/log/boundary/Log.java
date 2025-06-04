@@ -25,9 +25,18 @@ public interface Log {
         append("💡 " + message);
     }
 
+    static void request(String message){
+        append("👉 " + message);
+    }
+
+    static void response(String message){
+        append("👈 " + message);
+    }
+
     static void error(String message){
         append("❌ " + message);
     }
+
 
     private static void append(String message){
         try {
