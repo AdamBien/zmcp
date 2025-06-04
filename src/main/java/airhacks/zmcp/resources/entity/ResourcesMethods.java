@@ -1,5 +1,7 @@
 package airhacks.zmcp.resources.entity;
 
+import java.util.Optional;
+
 public enum ResourcesMethods {
     INITIALIZE("initialize"),
     INITIALIZED("initialized"),
@@ -18,12 +20,16 @@ public enum ResourcesMethods {
         return method;
     }
 
-    public static ResourcesMethods fromString(String method) {
+    public static Optional<ResourcesMethods> fromString(String method) {
         for (ResourcesMethods protocol : values()) {
             if (protocol.method.equals(method)) {
-                return protocol;
+                return Optional.of(protocol);
             }
         }
-        throw new IllegalArgumentException("Unknown method: " + method);
+        return Optional.empty();
+    }
+
+    public boolean isMethod(String method) {
+        return this.method().equals(method);
     }
 }

@@ -83,31 +83,32 @@ public class ResourcesProtocol {
             var id = json.optInt("id", -1);
             Log.info("Processing method: " + method + ", id: " + id);
 
-            if (!isInitialized && !ResourcesMethods.INITIALIZE.method().equals(method)) {
+            if (!isInitialized && !ResourcesMethods.INITIALIZE.isMethod(method)) {
                 Log.error("Server not initialized, rejecting method: " + method);
                 sendError(id, -32002, "Server not initialized");
                 return;
             }
 
-            try {
-                var protocol = ResourcesMethods.fromString(method);
-                switch (protocol) {
-                    case INITIALIZE -> handleInitialize(id, json);
-                    case INITIALIZED -> handleInitialized();
-                    case LIST_RESOURCES -> handleListResources(id);
-                    case READ_RESOURCE -> handleReadResource(id);
-                    case SUBSCRIBE -> handleSubscribe(id);
-                    case UNSUBSCRIBE -> handleUnsubscribe(id);
-                }
-            } catch (IllegalArgumentException e) {
+            var optionalProtocol = ResourcesMethods.fromString(method);
+            if (optionalProtocol.isEmpty()) {
                 Log.error("Method not found: " + method);
                 sendError(id, -32601, "Method not found: " + method);
+                return;
+            }
+            var protocol = optionalProtocol.get();
+            switch (protocol) {
+                case INITIALIZE -> handleInitialize(id, json);
+                case INITIALIZED -> handleInitialized();
+                case LIST_RESOURCES -> handleListResources(id);
+                case READ_RESOURCE -> handleReadResource(id);
+                case SUBSCRIBE -> handleSubscribe(id);
+                case UNSUBSCRIBE -> handleUnsubscribe(id);
             }
         } catch (JSONException e) {
-            Log.error("Error parsing JSON request: " +e);
+            Log.error("Error parsing JSON request: " + e);
             sendError(null, -32700, "Invalid JSON-RPC request format");
         } catch (Exception e) {
-            Log.error("Error handling request: " +e);
+            Log.error("Error handling request: " + e);
             sendError(null, -32603, "Internal error: " + e.getMessage());
         }
     }
