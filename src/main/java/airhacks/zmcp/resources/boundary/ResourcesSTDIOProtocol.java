@@ -20,18 +20,16 @@ import airhacks.zmcp.resources.entity.ResourcesMethods;
  * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle
  */
 public class ResourcesSTDIOProtocol {
-    final BufferedReader reader;
     final PrintWriter writer;
     boolean isInitialized = false;
 
     public ResourcesSTDIOProtocol() {
-        this.reader = new BufferedReader(new InputStreamReader(System.in));
         this.writer = new PrintWriter(System.out, true);
     }
 
     public void start() throws IOException {
         Log.info("Starting StdioTransport");
-        try {
+        try(var isr = new InputStreamReader(System.in);var reader = new BufferedReader(isr)) {
             while (true) {
                 try {
                     Log.info("Waiting for next message...");
@@ -53,11 +51,6 @@ public class ResourcesSTDIOProtocol {
             }
         } finally {
             Log.info("StdioTransport stopped");
-            try {
-                reader.close();
-            } catch (IOException e) {
-                Log.error("Error closing reader: " + e.getMessage());
-            }
             writer.close();
         }
     }
