@@ -1,6 +1,7 @@
 package airhacks.zmcp.resources.control;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -29,8 +30,15 @@ public record FileAccess(Path rootFolder) {
 
 
 
-    public String readResource(String path) {
-        Log.info("Reading resource: " + path);
-        return "Hello, World!";
+    public String readResource(String uriString) {
+        Log.info("Reading resource: " + uriString);
+        var uri= URI.create(uriString);
+        var path = uri.getPath();
+        try {
+            return Files.readString(rootFolder.resolve(path));
+        } catch (IOException e) {
+            Log.error("Error reading resource: " + e);
+            return null;
+        }
     }
 } 
