@@ -2,14 +2,18 @@ package airhacks.zmcp.resources.entity;
 
 import java.util.Optional;
 
+/**
+ * https://modelcontextprotocol.io/specification/2025-03-26/server/resources
+ */
 public enum ResourcesMethods {
     INITIALIZE("initialize"),
     INITIALIZED("initialized"),
-    LIST_RESOURCES("resources/list"),
-    READ_RESOURCE("resources/read"),
+    RESOURCES_LIST("resources/list"),
+    RESOURCES_READ("resources/read"),
     SUBSCRIBE("resources/subscribe"),
     UNSUBSCRIBE("resources/unsubscribe"),
-    NOTIFICATIONS_INITIALIZED("notifications/initialized");
+    NOTIFICATIONS_INITIALIZED("notifications/initialized"),
+    NOTIFICATIONS_CANCELLED("notifications/cancelled");
 
     private final String method;
 

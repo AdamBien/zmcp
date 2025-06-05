@@ -99,10 +99,10 @@ public class ResourcesSTDIOProtocol {
             switch (protocol) {
                 case INITIALIZE -> handleInitialize(id, json);
                 case INITIALIZED -> handleInitialized();
-                case LIST_RESOURCES -> handleListResources(id);
+                case RESOURCES_LIST -> handleListResources(id);
                 case NOTIFICATIONS_INITIALIZED -> handleNotificationsInitialized();
                 case NOTIFICATIONS_CANCELLED -> handleNotificationsCancelled();
-                case READ_RESOURCE -> handleReadResource(id);
+                case RESOURCES_READ -> handleReadResource(id);
                 case SUBSCRIBE -> handleSubscribe(id);
                 case UNSUBSCRIBE -> handleUnsubscribe(id);
             }
@@ -167,17 +167,21 @@ public class ResourcesSTDIOProtocol {
 
     void handleReadResource(Integer id) {
         Log.info("Handling read resource request");
+        methodNotImplementedYet(id);
+    }
+
+    private void methodNotImplementedYet(Integer id) {
         sendError(id, -32601, "Method not implemented yet");
     }
 
     void handleSubscribe(Integer id) {
         Log.info("Handling subscribe request");
-        sendError(id, -32601, "Method not implemented yet");
+        methodNotImplementedYet(id);
     }
 
     void handleUnsubscribe(Integer id) {
         Log.info("Handling unsubscribe request");
-        sendError(id, -32601, "Method not implemented yet");
+        methodNotImplementedYet(id);
     }
 
     void sendError(Integer id, int code, String message) {
