@@ -44,7 +44,7 @@ public class ResourcesSTDIOProtocol {
                         Log.info("Received blank line, skipping");
                         continue;
                     }
-                    Log.info("Received line: " + line);
+                    Log.request(line);
                     handleRequest(line);
                 } catch (IOException e) {
                     Log.error("Error reading from input: " + e);
@@ -102,7 +102,7 @@ public class ResourcesSTDIOProtocol {
                 case RESOURCES_LIST -> handleListResources(id);
                 case NOTIFICATIONS_INITIALIZED -> handleNotificationsInitialized();
                 case NOTIFICATIONS_CANCELLED -> handleNotificationsCancelled();
-                case RESOURCES_READ -> handleReadResource(id);
+                case RESOURCES_READ -> handleReadResource(id, json);
                 case SUBSCRIBE -> handleSubscribe(id);
                 case UNSUBSCRIBE -> handleUnsubscribe(id);
             }
@@ -165,9 +165,14 @@ public class ResourcesSTDIOProtocol {
         this.write(ResourceResponses.listResources(id, resourcesJson));
     }
 
-    void handleReadResource(Integer id) {
+    void handleReadResource(Integer id, JSONObject json) {
         Log.info("Handling read resource request");
-        methodNotImplementedYet(id);
+        var params = json.getJSONObject("params");
+        var uri = params.getString("uri");
+        var mimeType = params.getString("mimeType");
+        var content = ResourceAccess.readResource(uri);
+        var response = ResourceResponses.readResource(id, uri, mimeType, content);
+        this.write(response);
     }
 
     private void methodNotImplementedYet(Integer id) {

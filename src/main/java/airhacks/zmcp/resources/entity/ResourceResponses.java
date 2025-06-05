@@ -61,4 +61,21 @@ public interface ResourceResponses {
                 }"""
                 .formatted(id);
     }
+
+    static String readResource(int id, String uri, String mimeType, String content) {
+        return """
+            {
+                "jsonrpc": "2.0",
+                "id": %d,
+                "result": {
+                    "contents": [
+                    {
+                        "uri": "%s",
+                        "mimeType": "%s",
+                        "text": "%s"
+                    }
+                    ]
+                }
+            }""".formatted(id,uri,mimeType,content);
+    }
 }
