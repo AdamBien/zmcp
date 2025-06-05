@@ -24,7 +24,7 @@ public class ResourcesSTDIOProtocol {
     FileAccess fileAccess;
     
     public ResourcesSTDIOProtocol(String rootFolder) {
-        this.fileAccess = new FileAccess(rootFolder);
+        this.fileAccess = FileAccess.of(rootFolder);
         this.messageSender = new MessageSender();
     }
 
