@@ -176,7 +176,7 @@ public class ResourcesSTDIOProtocol {
         Log.info("Handling read resource request");
         var params = json.getJSONObject("params");
         var uri = params.getString("uri");
-        var content = this.fileAccess.readResource(uri);
+        var content = this.fileAccess.readFile(uri);
         var response = ResourceResponses.readResource(id, uri, "text/plain", content);
         messageSender.send(response);
     }

@@ -30,7 +30,7 @@ public record FileAccess(Path rootFolder) {
 
 
 
-    public String readResource(String uriString) {
+    public String readFile(String uriString) {
         Log.info("Reading resource: " + uriString);
         var uri= URI.create(uriString);
         var path = uri.getPath();
