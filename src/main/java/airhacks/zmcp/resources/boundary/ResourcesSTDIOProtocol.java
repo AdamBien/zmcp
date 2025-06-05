@@ -19,12 +19,12 @@ import airhacks.zmcp.resources.entity.ResourcesMethods;
 /**
  * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle
  */
-public class ResourcesProtocol {
+public class ResourcesSTDIOProtocol {
     final BufferedReader reader;
     final PrintWriter writer;
     boolean isInitialized = false;
 
-    public ResourcesProtocol() {
+    public ResourcesSTDIOProtocol() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
         this.writer = new PrintWriter(System.out, true);
     }
@@ -100,6 +100,7 @@ public class ResourcesProtocol {
                 case INITIALIZE -> handleInitialize(id, json);
                 case INITIALIZED -> handleInitialized();
                 case LIST_RESOURCES -> handleListResources(id);
+                case NOTIFICATIONS_INITIALIZED -> handleNotificationsInitialized();
                 case READ_RESOURCE -> handleReadResource(id);
                 case SUBSCRIBE -> handleSubscribe(id);
                 case UNSUBSCRIBE -> handleUnsubscribe(id);
@@ -142,6 +143,10 @@ public class ResourcesProtocol {
     void handleInitialized() {
         Log.info("Client sent initialized notification");
 
+    }
+
+    void handleNotificationsInitialized() {
+        Log.info("Client sent notifications initialized notification");
     }
 
     void handleListResources(Integer id) {

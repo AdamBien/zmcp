@@ -8,7 +8,8 @@ public enum ResourcesMethods {
     LIST_RESOURCES("resources/list"),
     READ_RESOURCE("resources/read"),
     SUBSCRIBE("resources/subscribe"),
-    UNSUBSCRIBE("resources/unsubscribe");
+    UNSUBSCRIBE("resources/unsubscribe"),
+    NOTIFICATIONS_INITIALIZED("notifications/initialized");
 
     private final String method;
 
