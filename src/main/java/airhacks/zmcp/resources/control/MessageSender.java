@@ -1,0 +1,29 @@
+package airhacks.zmcp.resources.control;
+
+import java.io.PrintWriter;
+
+import airhacks.zmcp.jsonrpc.entity.ErrorResponses;
+import airhacks.zmcp.log.boundary.Log;
+
+public class MessageSender {
+    PrintWriter writer;
+
+    public MessageSender() {
+        this.writer = new PrintWriter(System.out, true);
+    }
+
+    public void sendError(Integer id, int code, String message) {
+        Log.info("Sending error response");
+        this.send(ErrorResponses.error(id, code, message));
+    }
+    public void methodNotImplementedYet(Integer id) {
+        sendError(id, -32601, "Method not implemented yet");
+    }
+
+
+    public void send(String message) {
+        var strippedMessage = message.replaceAll("\\s+", "");
+        Log.response(strippedMessage);
+        writer.println(strippedMessage);
+    }
+}

@@ -11,6 +11,7 @@ import org.json.JSONException;
 
 import airhacks.zmcp.jsonrpc.entity.ErrorResponses;
 import airhacks.zmcp.log.boundary.Log;
+import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.resources.control.ResourceAccess;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
@@ -20,11 +21,11 @@ import airhacks.zmcp.resources.entity.ResourcesMethods;
  * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle
  */
 public class ResourcesSTDIOProtocol {
-    final PrintWriter writer;
     boolean isInitialized = false;
+    MessageSender messageSender;
 
     public ResourcesSTDIOProtocol() {
-        this.writer = new PrintWriter(System.out, true);
+        this.messageSender = new MessageSender();
     }
 
     public void start() throws IOException {
@@ -51,7 +52,6 @@ public class ResourcesSTDIOProtocol {
             }
         } finally {
             Log.info("StdioTransport stopped");
-            writer.close();
         }
     }
 
@@ -60,14 +60,14 @@ public class ResourcesSTDIOProtocol {
         try {
             if (request == null) {
                 Log.error("Received null request");
-                sendError(null, -32700, "Invalid request: null");
+                messageSender.sendError(null, -32700, "Invalid request: null");
                 return;
             }
 
             var jsonRequest = request.trim();
             if (!jsonRequest.startsWith("{") || !jsonRequest.endsWith("}")) {
                 Log.error("Invalid JSON-RPC request format: " + jsonRequest);
-                sendError(null, -32700, "Invalid JSON-RPC request format");
+                messageSender.sendError(null, -32700, "Invalid JSON-RPC request format");
                 return;
             }
 
@@ -78,14 +78,14 @@ public class ResourcesSTDIOProtocol {
 
             if (!isInitialized && !ResourcesMethods.INITIALIZE.isMethod(method)) {
                 Log.error("Server not initialized, rejecting method: " + method);
-                sendError(id, -32002, "Server not initialized");
+                messageSender.sendError(id, -32002, "Server not initialized");
                 return;
             }
 
             var optionalProtocol = ResourcesMethods.fromString(method);
             if (optionalProtocol.isEmpty()) {
                 Log.error("Method not found: " + method);
-                sendError(id, -32601, "Method not found: " + method);
+                messageSender.sendError(id, -32601, "Method not found: " + method);
                 return;
             }
             var protocol = optionalProtocol.get();
@@ -101,10 +101,10 @@ public class ResourcesSTDIOProtocol {
             }
         } catch (JSONException e) {
             Log.error("Error parsing JSON request: " + e);
-            sendError(null, -32700, "Invalid JSON-RPC request format");
+            messageSender.sendError(null, -32700, "Invalid JSON-RPC request format");
         } catch (Exception e) {
             Log.error("Error handling request: " + e);
-            sendError(null, -32603, "Internal error: " + e.getMessage());
+            messageSender.sendError(null, -32603, "Internal error: " + e.getMessage());
         }
     }
 
@@ -125,12 +125,12 @@ public class ResourcesSTDIOProtocol {
             }
 
             var initializeResponse = ResourceResponses.initialize(id);
-            this.write(initializeResponse);
+            messageSender.send(initializeResponse);
             this.isInitialized = true;
 
         } catch (JSONException e) {
             Log.error("Error parsing initialize request: " + e.getMessage());
-            sendError(id, -32602, "Invalid params: " + e.getMessage());
+            messageSender.sendError(id, -32602, "Invalid params: " + e.getMessage());
         }
     }
 
@@ -155,7 +155,7 @@ public class ResourcesSTDIOProtocol {
                 .collect(Collectors.joining(","));
 
         Log.info("Sending list resources response");
-        this.write(ResourceResponses.listResources(id, resourcesJson));
+        messageSender.send(ResourceResponses.listResources(id, resourcesJson));
     }
 
     /**
@@ -178,31 +178,20 @@ public class ResourcesSTDIOProtocol {
         var uri = params.getString("uri");
         var content = ResourceAccess.readResource(uri);
         var response = ResourceResponses.readResource(id, uri, "text/plain", content);
-        this.write(response);
+        messageSender.send(response);
     }
 
-    private void methodNotImplementedYet(Integer id) {
-        sendError(id, -32601, "Method not implemented yet");
-    }
 
     void handleSubscribe(Integer id) {
         Log.info("Handling subscribe request");
-        methodNotImplementedYet(id);
+        messageSender.methodNotImplementedYet(id);
     }
 
     void handleUnsubscribe(Integer id) {
         Log.info("Handling unsubscribe request");
-        methodNotImplementedYet(id);
+        messageSender.methodNotImplementedYet(id);
     }
 
-    void sendError(Integer id, int code, String message) {
-        Log.info("Sending error response");
-        this.write(ErrorResponses.error(id, code, message));
-    }
 
-    void write(String message) {
-        var strippedMessage = message.replaceAll("\\s+", "");
-        Log.response(strippedMessage);
-        writer.println(strippedMessage);
-    }
+
 }
