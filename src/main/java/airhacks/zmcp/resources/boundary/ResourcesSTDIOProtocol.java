@@ -165,13 +165,26 @@ public class ResourcesSTDIOProtocol {
         this.write(ResourceResponses.listResources(id, resourcesJson));
     }
 
+    /**
+     * https://modelcontextprotocol.io/specification/2025-03-26/server/resources#reading-resources
+     * {
+     * "jsonrpc": "2.0",
+     * "id": 2,
+     * "method": "resources/read",
+     * "params": {
+     * "uri": "file:///project/src/main.rs"
+     * }
+     * }
+     * 
+     * @param id
+     * @param json
+     */
     void handleReadResource(Integer id, JSONObject json) {
         Log.info("Handling read resource request");
         var params = json.getJSONObject("params");
         var uri = params.getString("uri");
-        var mimeType = params.getString("mimeType");
         var content = ResourceAccess.readResource(uri);
-        var response = ResourceResponses.readResource(id, uri, mimeType, content);
+        var response = ResourceResponses.readResource(id, uri, "text/plain", content);
         this.write(response);
     }
 

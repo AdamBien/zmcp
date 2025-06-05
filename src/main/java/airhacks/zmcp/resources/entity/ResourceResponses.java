@@ -62,6 +62,14 @@ public interface ResourceResponses {
                 .formatted(id);
     }
 
+    /**
+     * https://modelcontextprotocol.io/specification/2025-03-26/server/resources#reading-resources
+     * @param id
+     * @param uri
+     * @param mimeType
+     * @param content
+     * @return
+     */
     static String readResource(int id, String uri, String mimeType, String content) {
         return """
             {
