@@ -101,6 +101,7 @@ public class ResourcesSTDIOProtocol {
                 case INITIALIZED -> handleInitialized();
                 case LIST_RESOURCES -> handleListResources(id);
                 case NOTIFICATIONS_INITIALIZED -> handleNotificationsInitialized();
+                case NOTIFICATIONS_CANCELLED -> handleNotificationsCancelled();
                 case READ_RESOURCE -> handleReadResource(id);
                 case SUBSCRIBE -> handleSubscribe(id);
                 case UNSUBSCRIBE -> handleUnsubscribe(id);
@@ -147,6 +148,10 @@ public class ResourcesSTDIOProtocol {
 
     void handleNotificationsInitialized() {
         Log.info("Client sent notifications initialized notification");
+    }
+
+    void handleNotificationsCancelled() {
+        Log.info("Client sent notifications cancelled notification");
     }
 
     void handleListResources(Integer id) {
