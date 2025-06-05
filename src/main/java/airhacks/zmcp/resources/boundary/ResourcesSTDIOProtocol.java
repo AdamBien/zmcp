@@ -3,16 +3,14 @@ package airhacks.zmcp.resources.boundary;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import airhacks.zmcp.jsonrpc.entity.ErrorResponses;
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.MessageSender;
-import airhacks.zmcp.resources.control.ResourceAccess;
+import airhacks.zmcp.resources.control.FileAccess;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 import airhacks.zmcp.resources.entity.ResourcesMethods;
@@ -23,8 +21,10 @@ import airhacks.zmcp.resources.entity.ResourcesMethods;
 public class ResourcesSTDIOProtocol {
     boolean isInitialized = false;
     MessageSender messageSender;
-
-    public ResourcesSTDIOProtocol() {
+    FileAccess fileAccess;
+    
+    public ResourcesSTDIOProtocol(String rootFolder) {
+        this.fileAccess = new FileAccess(rootFolder);
         this.messageSender = new MessageSender();
     }
 
@@ -149,7 +149,7 @@ public class ResourcesSTDIOProtocol {
 
     void handleListResources(Integer id) {
         Log.info("Handling list resources request");
-        var resources = ResourceAccess.listResources();
+        var resources = this.fileAccess.listResources();
         var resourcesJson = resources.stream()
                 .map(Resource::toJson)
                 .collect(Collectors.joining(","));
@@ -176,7 +176,7 @@ public class ResourcesSTDIOProtocol {
         Log.info("Handling read resource request");
         var params = json.getJSONObject("params");
         var uri = params.getString("uri");
-        var content = ResourceAccess.readResource(uri);
+        var content = this.fileAccess.readResource(uri);
         var response = ResourceResponses.readResource(id, uri, "text/plain", content);
         messageSender.send(response);
     }

@@ -12,12 +12,12 @@ import airhacks.zmcp.resources.boundary.ResourcesSTDIOProtocol;
  */
 public interface App {
 
-    String VERSION = "zmcp v2025.06.05.03"; 
+    String VERSION = "zmcp v2025.06.05.04"; 
 
 
     static void main(String... args) throws IOException {
         Log.init();
-        var transport = new ResourcesSTDIOProtocol();
+        var transport = new ResourcesSTDIOProtocol(".");
         transport.start();
     }
 }
