@@ -28,7 +28,7 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
     }
 
 
-    public void handleRequest(MCPRequest request) {
+    public boolean handleRequest(MCPRequest request) {
         Log.info("Processing request: " + request);
         try {
             var method = request.method();
@@ -38,8 +38,7 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
             var optionalProtocol = ResourcesMethods.fromString(method);
             if (optionalProtocol.isEmpty()) {
                 Log.error("Method not found: " + method);
-                messageSender.sendError(id, -32601, "Method not found: " + method);
-                return;
+                return false;
             }
             var protocol = optionalProtocol.get();
             switch (protocol) {
@@ -57,6 +56,7 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
             Log.error("Error handling request: " + e);
             messageSender.sendError(null, -32603, "Internal error: " + e.getMessage());
         }
+        return true;
     }
 
 
