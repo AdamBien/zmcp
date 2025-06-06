@@ -1,7 +1,5 @@
 package airhacks.zmcp.resources.entity;
 
-import org.json.JSONObject;
-
 import airhacks.App;
 import airhacks.zmcp.resources.control.FileAccess.FileResourceContent;
 
@@ -9,10 +7,12 @@ public interface ResourceResponses {
 
     /**
      * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle#initialize
+     * 
      * @param id
      * @return
      */
-    static String initialize(Integer id, String protocolVersion) {
+    static String initialize(Integer id, String protocolVersion, String capabilities) {
+
         return """
                 {
                     "jsonrpc": "2.0",
@@ -24,23 +24,11 @@ public interface ResourceResponses {
                             "version":"%s"
                         },
                         "capabilities": {
-                            "resources": {
-                                "list": true,
-                                "read": true,
-                                "supportedMimeTypes": [
-                                    "text/plain",
-                                    "text/markdown",
-                                    "application/json"
-                                ]
-                            },
-                            "roots": {
-                                "list": true,
-                                "listChanged": true
-                            }
+                         %s
                         }
                     }
                 }"""
-                .formatted(id, protocolVersion,App.VERSION);
+                .formatted(id, protocolVersion, App.VERSION, capabilities);
     }
 
     static String listResources(Integer id, String resourcesJson) {
@@ -67,6 +55,7 @@ public interface ResourceResponses {
 
     /**
      * https://modelcontextprotocol.io/specification/2025-03-26/server/resources#reading-resources
+     * 
      * @param id
      * @param uri
      * @param mimeType
@@ -76,20 +65,22 @@ public interface ResourceResponses {
     static String readResource(int id, String uri, FileResourceContent resource) {
         var mimeType = resource.mimeType();
         var encodedContent = resource.encodedContent();
-        var contentKey = resource.isBlob() ? "blob":" text";
+        var contentKey = resource.isBlob() ? "blob" : " text";
         return """
-            {
-                "jsonrpc": "2.0",
-                "id": %d,
-                "result": {
-                    "contents": [
-                    {
-                        "uri": "%s",
-                        "mimeType": "%s",
-                        "%s": %s
+                {
+                    "jsonrpc": "2.0",
+                    "id": %d,
+                    "result": {
+                        "contents": [
+                        {
+                            "uri": "%s",
+                            "mimeType": "%s",
+                            "%s": %s
+                        }
+                        ]
                     }
-                    ]
-                }
-            }""".formatted(id,uri,mimeType,contentKey,encodedContent);
+                }""".formatted(id, uri, mimeType, contentKey, encodedContent);
     }
+
+
 }

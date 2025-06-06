@@ -3,10 +3,14 @@ package airhacks.zmcp.router.boundary;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
+import airhacks.zmcp.base.boundary.CoreSTDIOProtocol;
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.router.entity.MCPRequest;
@@ -17,8 +21,10 @@ public class FrontDoor {
     MessageSender messageSender;
 
     public FrontDoor(List<RequestHandler> requestHandlers) {
-        this.requestHandlers = requestHandlers;
+        this.requestHandlers = new ArrayList<>(requestHandlers);
         this.messageSender = new MessageSender();
+        var capabilities = this.capabilities();
+        this.requestHandlers.add(new CoreSTDIOProtocol(capabilities));
     }
 
     public void start() throws IOException {
@@ -78,6 +84,16 @@ public class FrontDoor {
             Log.error("No request handler found for method: " + method);
             messageSender.sendError(id, -32601, "Method not found: " + method);
         }
+    }
+
+
+    String capabilities(){
+        return this.requestHandlers.stream()
+                .map(RequestHandler::capability)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.joining(","));
+     
     }
 
 }

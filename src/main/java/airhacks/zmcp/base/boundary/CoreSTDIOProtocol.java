@@ -16,8 +16,11 @@ public class CoreSTDIOProtocol implements RequestHandler {
 
     MessageSender messageSender;
 
-    public CoreSTDIOProtocol() {
+    String capabilities;
+
+    public CoreSTDIOProtocol(String capabilities) {
         this.messageSender = new MessageSender();
+        this.capabilities = capabilities;
     }
 
     public boolean handleRequest(MCPRequest request) {
@@ -44,7 +47,6 @@ public class CoreSTDIOProtocol implements RequestHandler {
         return true;
     }
 
-
     void handleInitialize(Integer id, JSONObject json) {
         Log.info("Handling initialize request: " + json);
         try {
@@ -61,7 +63,7 @@ public class CoreSTDIOProtocol implements RequestHandler {
                 Log.error("Unsupported protocol version: " + protocolVersion);
             }
 
-            var initializeResponse = ResourceResponses.initialize(id, protocolVersion);
+            var initializeResponse = ResourceResponses.initialize(id, protocolVersion, this.capabilities);
             messageSender.send(initializeResponse);
             this.isInitialized = true;
 

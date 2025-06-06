@@ -1,5 +1,6 @@
 package airhacks.zmcp.resources.boundary;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.json.JSONException;
@@ -114,6 +115,20 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
         messageSender.methodNotImplementedYet(id);
     }
 
+    public Optional<String> capability(){
+        var capability = """
+                    "resources": {
+                                "list": true,
+                                "read": true,
+                            },
+                            "roots": {
+                                "list": true,
+                                "listChanged": true
+                            }
+
+                """;
+        return Optional.of(capability);
+    }
 
 
 }
