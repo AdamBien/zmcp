@@ -1,8 +1,5 @@
 package airhacks.zmcp.resources.boundary;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
 import org.json.JSONException;
@@ -14,11 +11,12 @@ import airhacks.zmcp.resources.control.FileAccess;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 import airhacks.zmcp.resources.entity.ResourcesMethods;
+import airhacks.zmcp.router.boundary.RequestHandler;
 
 /**
  * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle
  */
-public class ResourcesSTDIOProtocol {
+public class ResourcesSTDIOProtocol implements RequestHandler {
     boolean isInitialized = false;
     MessageSender messageSender;
     FileAccess fileAccess;
@@ -28,34 +26,8 @@ public class ResourcesSTDIOProtocol {
         this.messageSender = new MessageSender();
     }
 
-    public void start() throws IOException {
-        Log.info("Starting StdioTransport");
-        try(var isr = new InputStreamReader(System.in);var reader = new BufferedReader(isr)) {
-            while (true) {
-                try {
-                    Log.info("Waiting for next message...");
-                    var line = reader.readLine();
-                    if (line == null) {
-                        Log.info("Connection closed by client ");
-                        break;
-                    }
-                    if (line.isBlank()) {
-                        Log.info("Received blank line, skipping");
-                        continue;
-                    }
-                    Log.request(line);
-                    handleRequest(line);
-                } catch (IOException e) {
-                    Log.error("Error reading from input: " + e);
-                    break;
-                }
-            }
-        } finally {
-            Log.info("StdioTransport stopped");
-        }
-    }
 
-    void handleRequest(String request) {
+    public void handleRequest(String request) {
         Log.info("Processing request: " + request);
         try {
             if (request == null) {
