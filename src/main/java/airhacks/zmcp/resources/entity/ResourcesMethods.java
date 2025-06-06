@@ -2,12 +2,13 @@ package airhacks.zmcp.resources.entity;
 
 import java.util.Optional;
 
+import airhacks.zmcp.router.entity.RequestMethods;
+
 /**
  * https://modelcontextprotocol.io/specification/2025-03-26/server/resources
  */
-public enum ResourcesMethods {
-    INITIALIZE("initialize"),
-    INITIALIZED("initialized"),
+public enum ResourcesMethods implements RequestMethods {
+    
     RESOURCES_LIST("resources/list"),
     RESOURCES_READ("resources/read"),
     SUBSCRIBE("resources/subscribe"),

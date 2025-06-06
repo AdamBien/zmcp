@@ -12,12 +12,13 @@ import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 import airhacks.zmcp.resources.entity.ResourcesMethods;
 import airhacks.zmcp.router.boundary.RequestHandler;
+import airhacks.zmcp.router.entity.MCPRequest;
 
 /**
  * https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle
  */
 public class ResourcesSTDIOProtocol implements RequestHandler {
-    boolean isInitialized = false;
+
     MessageSender messageSender;
     FileAccess fileAccess;
     
@@ -27,32 +28,12 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
     }
 
 
-    public void handleRequest(String request) {
+    public void handleRequest(MCPRequest request) {
         Log.info("Processing request: " + request);
         try {
-            if (request == null) {
-                Log.error("Received null request");
-                messageSender.sendError(null, -32700, "Invalid request: null");
-                return;
-            }
-
-            var jsonRequest = request.trim();
-            if (!jsonRequest.startsWith("{") || !jsonRequest.endsWith("}")) {
-                Log.error("Invalid JSON-RPC request format: " + jsonRequest);
-                messageSender.sendError(null, -32700, "Invalid JSON-RPC request format");
-                return;
-            }
-
-            var json = new JSONObject(jsonRequest);
-            var method = json.optString("method", "");
-            var id = json.optInt("id", -1);
-            Log.info("Processing method: " + method + ", id: " + id);
-
-            if (!isInitialized && !ResourcesMethods.INITIALIZE.isMethod(method)) {
-                Log.error("Server not initialized, rejecting method: " + method);
-                messageSender.sendError(id, -32002, "Server not initialized");
-                return;
-            }
+            var method = request.method();
+            var id = request.id();
+            var json = request.json();
 
             var optionalProtocol = ResourcesMethods.fromString(method);
             if (optionalProtocol.isEmpty()) {
@@ -62,8 +43,6 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
             }
             var protocol = optionalProtocol.get();
             switch (protocol) {
-                case INITIALIZE -> handleInitialize(id, json);
-                case INITIALIZED -> handleInitialized();
                 case RESOURCES_LIST -> handleListResources(id);
                 case NOTIFICATIONS_INITIALIZED -> handleNotificationsInitialized();
                 case NOTIFICATIONS_CANCELLED -> handleNotificationsCancelled();
@@ -80,36 +59,7 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
         }
     }
 
-    void handleInitialize(Integer id, JSONObject json) {
-        Log.info("Handling initialize request: " + json);
-        try {
-            var params = json.getJSONObject("params");
-            var protocolVersion = params.getString("protocolVersion");
-            var clientInfo = params.getJSONObject("clientInfo");
-            var clientName = clientInfo.getString("name");
-            var clientVersion = clientInfo.getString("version");
 
-            Log.info("Initializing with protocol version: %s, client: %s %s".formatted(
-                    protocolVersion, clientName, clientVersion));
-
-            if (!"2025-03-26".equals(protocolVersion)) {
-                Log.error("Unsupported protocol version: " + protocolVersion);
-            }
-
-            var initializeResponse = ResourceResponses.initialize(id, protocolVersion);
-            messageSender.send(initializeResponse);
-            this.isInitialized = true;
-
-        } catch (JSONException e) {
-            Log.error("Error parsing initialize request: " + e.getMessage());
-            messageSender.sendError(id, -32602, "Invalid params: " + e.getMessage());
-        }
-    }
-
-    void handleInitialized() {
-        Log.info("Client sent initialized notification");
-
-    }
 
     void handleNotificationsInitialized() {
         Log.info("Client sent notifications initialized notification");
