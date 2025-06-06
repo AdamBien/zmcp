@@ -21,8 +21,8 @@ public class MessageSender {
     }
 
 
-    public void send(String message) {
-        var strippedMessage = message.replaceAll("\\s+", "");
+    public void send(String jsonMessage) {
+        var strippedMessage = jsonMessage.replaceAll("\\s+", "");
         Log.response(strippedMessage);
         writer.println(strippedMessage);
     }

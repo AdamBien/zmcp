@@ -1,5 +1,7 @@
 package airhacks.zmcp.resources.entity;
 
+import org.json.JSONObject;
+
 import airhacks.App;
 
 public interface ResourceResponses {
@@ -71,6 +73,7 @@ public interface ResourceResponses {
      * @return
      */
     static String readResource(int id, String uri, String mimeType, String content) {
+        var quotedContent = JSONObject.quote(content);
         return """
             {
                 "jsonrpc": "2.0",
@@ -84,6 +87,6 @@ public interface ResourceResponses {
                     }
                     ]
                 }
-            }""".formatted(id,uri,mimeType,content);
+            }""".formatted(id,uri,mimeType,quotedContent);
     }
 }
