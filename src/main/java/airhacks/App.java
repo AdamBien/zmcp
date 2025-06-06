@@ -3,7 +3,7 @@ package airhacks;
 import java.io.IOException;
 import java.util.List;
 
-import airhacks.zmcp.core.boundary.CoreSTDIOProtocol;
+import airhacks.zmcp.base.boundary.CoreSTDIOProtocol;
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.boundary.ResourcesSTDIOProtocol;
 import airhacks.zmcp.router.boundary.FrontDoor;

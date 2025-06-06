@@ -1,4 +1,4 @@
-package airhacks.zmcp.core.boundary;
+package airhacks.zmcp.base.boundary;
 
 import org.json.JSONException;
 import org.json.JSONObject;
