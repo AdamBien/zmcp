@@ -83,7 +83,7 @@ public interface ResourceResponses {
                     {
                         "uri": "%s",
                         "mimeType": "%s",
-                        "text": "%s"
+                        "text": %s
                     }
                     ]
                 }
