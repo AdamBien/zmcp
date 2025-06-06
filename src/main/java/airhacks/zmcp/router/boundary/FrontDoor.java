@@ -68,8 +68,16 @@ public class FrontDoor {
         Log.info("Processing method: " + method + ", id: " + id);
 
         var mcpRequest = new MCPRequest(id, method, json);
-        this.requestHandlers
-                .forEach(requestHandler -> requestHandler.handleRequest(mcpRequest));
+        var requestHandled = this.requestHandlers
+                .stream()
+                .map(requestHandler -> requestHandler.handleRequest(mcpRequest))
+                .filter(Boolean::booleanValue)
+                .findAny()
+                .isPresent();
+        if (!requestHandled) {
+            Log.error("No request handler found for method: " + method);
+            messageSender.sendError(id, -32601, "Method not found: " + method);
+        }
     }
 
 }
