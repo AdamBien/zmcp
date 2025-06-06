@@ -124,7 +124,7 @@ public class ResourcesSTDIOProtocol {
                 Log.error("Unsupported protocol version: " + protocolVersion);
             }
 
-            var initializeResponse = ResourceResponses.initialize(id);
+            var initializeResponse = ResourceResponses.initialize(id, protocolVersion);
             messageSender.send(initializeResponse);
             this.isInitialized = true;
 

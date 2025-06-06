@@ -11,13 +11,13 @@ public interface ResourceResponses {
      * @param id
      * @return
      */
-    static String initialize(Integer id) {
+    static String initialize(Integer id, String protocolVersion) {
         return """
                 {
                     "jsonrpc": "2.0",
                     "id": %d,
                     "result": {
-                        "protocolVersion": "2025-03-26",
+                        "protocolVersion": "%s",
                         "serverInfo": {
                             "name": "zmcp",
                             "version":"%s"
@@ -39,7 +39,7 @@ public interface ResourceResponses {
                         }
                     }
                 }"""
-                .formatted(id,App.VERSION);
+                .formatted(id, protocolVersion,App.VERSION);
     }
 
     static String listResources(Integer id, String resourcesJson) {
