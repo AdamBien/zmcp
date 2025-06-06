@@ -98,8 +98,8 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
         Log.info("Handling read resource request");
         var params = json.getJSONObject("params");
         var uri = params.getString("uri");
-        var content = this.fileAccess.readFile(uri);
-        var response = ResourceResponses.readResource(id, uri, "text/plain", content);
+        var fileResource = this.fileAccess.readFile(uri);
+        var response = ResourceResponses.readResource(id, uri, fileResource);
         messageSender.send(response);
     }
 

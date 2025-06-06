@@ -3,6 +3,7 @@ package airhacks.zmcp.resources.entity;
 import org.json.JSONObject;
 
 import airhacks.App;
+import airhacks.zmcp.resources.control.FileAccess.FileResourceContent;
 
 public interface ResourceResponses {
 
@@ -72,8 +73,10 @@ public interface ResourceResponses {
      * @param content
      * @return
      */
-    static String readResource(int id, String uri, String mimeType, String content) {
-        var quotedContent = JSONObject.quote(content);
+    static String readResource(int id, String uri, FileResourceContent resource) {
+        var mimeType = resource.mimeType();
+        var encodedContent = resource.encodedContent();
+        var contentKey = resource.isBlob() ? "blob":" text";
         return """
             {
                 "jsonrpc": "2.0",
@@ -83,10 +86,10 @@ public interface ResourceResponses {
                     {
                         "uri": "%s",
                         "mimeType": "%s",
-                        "text": %s
+                        "%s": %s
                     }
                     ]
                 }
-            }""".formatted(id,uri,mimeType,quotedContent);
+            }""".formatted(id,uri,mimeType,contentKey,encodedContent);
     }
 }
