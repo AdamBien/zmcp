@@ -16,6 +16,7 @@ public record FileAccess(Path rootFolder) {
 
     static List<String> TEXT_MIME_TYPES = List.of("text/plain", "text/markdown", "text/html", "text/css",
             "text/javascript", "application/json", "application/xml");
+    static String UNKNOWN_MIME_TYPE = "application/octet-stream";
 
     public static FileAccess of(String rootFolder) {
         return new FileAccess(Path.of(rootFolder));
@@ -58,6 +59,9 @@ public record FileAccess(Path rootFolder) {
             var resolvedPath = rootFolder.resolve(path);
             var content = Files.readString(resolvedPath);
             var mimeType = Files.probeContentType(resolvedPath);
+            if (mimeType == null) {
+                mimeType = UNKNOWN_MIME_TYPE;
+            }
             return new FileResourceContent(mimeType, content);
         } catch (IOException e) {
             Log.error("Error reading resource: " + e);
