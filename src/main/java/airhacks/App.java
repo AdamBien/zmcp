@@ -15,7 +15,7 @@ import airhacks.zmcp.router.boundary.FrontDoor;
  */
 public interface App {
 
-    String VERSION = "zmcp v2025.06.06.04";     
+    String VERSION = "zmcp v2025.06.06.05";     
 
 
     static void main(String... args) throws IOException {

@@ -35,7 +35,7 @@ public record FileAccess(Path rootFolder) {
         }
     }
 
-    public record FileResourceContent(String mimeType, String content) {
+    public record FileResourceContent(String mimeType, byte[] content) {
 
         public boolean isBlob() {
             return !TEXT_MIME_TYPES.contains(this.mimeType.toLowerCase());
@@ -43,11 +43,13 @@ public record FileAccess(Path rootFolder) {
 
         public String encodedContent() {
             if (!this.isBlob()) {
-                return JSONObject.quote(this.content);
+                var stringified = new String(this.content);
+                return JSONObject.quote(stringified);
             }
-            var bytes = this.content.getBytes();
-            return Base64.getEncoder()
-                    .encodeToString(bytes);
+            var encodedBytes = Base64
+                    .getEncoder()
+                    .encodeToString(this.content);
+            return "\"%s\"".formatted(encodedBytes);
         }
     }
 
@@ -57,7 +59,7 @@ public record FileAccess(Path rootFolder) {
         var path = uri.getPath();
         try {
             var resolvedPath = rootFolder.resolve(path);
-            var content = Files.readString(resolvedPath);
+            var content = Files.readAllBytes(resolvedPath);
             var mimeType = Files.probeContentType(resolvedPath);
             if (mimeType == null) {
                 mimeType = UNKNOWN_MIME_TYPE;
