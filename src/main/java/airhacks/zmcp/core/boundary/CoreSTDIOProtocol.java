@@ -33,8 +33,7 @@ public class CoreSTDIOProtocol implements RequestHandler {
 
         var coreMethodOptional = CoreMethods.fromString(method);
         if (coreMethodOptional.isEmpty()) {
-            Log.error("Invalid method: " + method);
-            messageSender.sendError(id, -32601, "Invalid method: " + method);
+            Log.info("CoreSTDIOProtocol is not responsible for method: " + method);
             return false;
         }
         var coreMethod = coreMethodOptional.get();
