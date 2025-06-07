@@ -26,4 +26,12 @@ public class MessageSender {
         Log.response(strippedMessage);
         writer.println(strippedMessage);
     }
+
+    public void sendInvalidJSONRPCRequestFormat(Integer id) {        null, -32700, "Invalid JSON-RPC request format"
+        sendError(id, -32700, "Invalid JSON-RPC request format");
+    }
+
+    public void sendInternalError(Integer id, String message) {
+        sendError(id, -32603, "Internal error: " + message);
+    }
 }
