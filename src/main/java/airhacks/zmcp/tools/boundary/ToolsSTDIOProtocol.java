@@ -23,10 +23,11 @@ public class ToolsSTDIOProtocol implements RequestHandler {
     @Override
     public boolean handleRequest(MCPRequest request) {
         Log.info("Processing request: " + request);
+        var method = request.method();
+        var id = request.id();
+        var json = request.json();
+
         try {
-            var method = request.method();
-            var id = request.id();
-            var json = request.json();
 
             var optionalProtocol = ToolsMethods.fromString(method);
             if (optionalProtocol.isEmpty()) {
@@ -49,6 +50,9 @@ public class ToolsSTDIOProtocol implements RequestHandler {
     }
 
     void handleListTools(int id) {
+        Log.info("Sending list of tools");
+        var response = ToolsResponses.listTools(id);
+        messageSender.send(response);
     }
 
 }

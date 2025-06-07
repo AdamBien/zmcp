@@ -8,14 +8,14 @@ public class FileResourceContentTest {
 
     @Test
     void isText() {
-        var fileResourceContent = new FileAccess.FileResourceContent("text/plain", "Hello, world!");
+        var fileResourceContent = new FileAccess.FileResourceContent("text/plain", "Hello, world!".getBytes());
         assertThat(fileResourceContent.isBlob()).isFalse();
         assertThat(fileResourceContent.encodedContent()).isEqualTo("\"Hello, world!\"");
     }
 
     @Test
     void isBlob() {
-        var fileResourceContent = new FileAccess.FileResourceContent("app/binary", "Hello, world!");
+        var fileResourceContent = new FileAccess.FileResourceContent("app/binary", "Hello, world!".getBytes());
         assertThat(fileResourceContent.isBlob()).isTrue();
         assertThat(fileResourceContent.encodedContent()).isEqualTo("SGVsbG8sIHdvcmxkIQ==");
     }

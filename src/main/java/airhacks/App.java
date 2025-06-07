@@ -6,6 +6,7 @@ import java.util.List;
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.boundary.ResourcesSTDIOProtocol;
 import airhacks.zmcp.router.boundary.FrontDoor;
+import airhacks.zmcp.tools.boundary.ToolsSTDIOProtocol;
 
 
 /**
@@ -20,7 +21,8 @@ public interface App {
     static void main(String... args) throws IOException {
         Log.init();
         var frontDoor = new FrontDoor(List.of(
-            new ResourcesSTDIOProtocol(".")));
+            new ResourcesSTDIOProtocol("."),
+            new ToolsSTDIOProtocol()));
         frontDoor.start();
     }
 }

@@ -27,7 +27,7 @@ public class MessageSender {
         writer.println(strippedMessage);
     }
 
-    public void sendInvalidJSONRPCRequestFormat(Integer id) {        null, -32700, "Invalid JSON-RPC request format"
+    public void sendInvalidJSONRPCRequestFormat(Integer id) {     
         sendError(id, -32700, "Invalid JSON-RPC request format");
     }
 
