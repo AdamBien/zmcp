@@ -119,7 +119,7 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
         var capability = """
                     "resources": {
                                 "list": true,
-                                "read": true,
+                                "read": true
                             },
                             "roots": {
                                 "list": true,
