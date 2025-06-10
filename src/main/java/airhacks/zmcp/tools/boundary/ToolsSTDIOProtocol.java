@@ -1,5 +1,7 @@
 package airhacks.zmcp.tools.boundary;
 
+import java.util.Optional;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -72,9 +74,20 @@ public class ToolsSTDIOProtocol implements RequestHandler {
     }
 
     void handleListTools(int id) {
-        Log.info("Sending list of tools");
-        var response = ToolsResponses.listTools(id);
+        var tools = ToolLocator.all();
+        Log.info("tools found: " + tools.size());
+        var response = ToolsResponses.listTools(id, tools);
         messageSender.send(response);
+    }
+
+    @Override
+    public Optional<String> capability() {
+        var capability = """
+                "tools": {
+                    "listChanged": true
+                }
+                """;
+        return Optional.of(capability);
     }
 
 }
