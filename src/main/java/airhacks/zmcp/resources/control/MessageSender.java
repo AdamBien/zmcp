@@ -34,4 +34,9 @@ public class MessageSender {
     public void sendInternalError(Integer id, String message) {
         sendError(id, -32603, "Internal error: " + message);
     }
+
+    public void sendInvalidRequest(int id, String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sendInvalidRequest'");
+    }
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
  */
 public interface ToolInvocation {
     
-    Optional<String> invoke(String parameters);
+    Optional<String> use(String parameters);
 }

@@ -4,8 +4,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ToolInstanceTest {
+    
     @Test
-    void testOf() {
+    void creation() {
         var tool = new EchoCall();
         var toolDescription = ToolInstance.of(tool);
         Assertions.assertThat(toolDescription).isPresent();

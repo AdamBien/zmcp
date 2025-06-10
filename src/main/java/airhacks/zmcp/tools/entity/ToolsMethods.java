@@ -9,7 +9,8 @@ import airhacks.zmcp.router.entity.RequestMethods;
  */
 public enum ToolsMethods implements RequestMethods {
     
-    TOOLS_LIST("tools/list");
+    TOOLS_LIST("tools/list"), 
+    TOOLS_CALL("tools/call");
 
     private final String method;
 

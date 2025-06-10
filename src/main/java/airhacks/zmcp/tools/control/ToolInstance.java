@@ -28,6 +28,10 @@ public record ToolInstance(ToolInvocation tool, String name, String description,
         return Optional.of(toolDescription);
     }
 
+    public Optional<String> use(String input) {
+        return tool.use(input);
+    }
+
 
     
 

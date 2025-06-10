@@ -6,7 +6,7 @@ import java.util.ServiceLoader.Provider;
 
 import airhacks.zmcp.tools.api.ToolInvocation;
 
-public interface ToolsRegistry {
+public interface ToolLocator {
 
     static Optional<ToolInstance> findTool(String name) {
         return ServiceLoader.load(ToolInvocation.class)
