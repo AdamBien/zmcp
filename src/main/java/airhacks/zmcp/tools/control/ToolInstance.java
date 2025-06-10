@@ -13,7 +13,7 @@ public record ToolInstance(ToolInvocation tool, String name, String description,
         var toolClass = tool.getClass();
         Method toolMethod;
         try {
-            toolMethod = toolClass.getMethod("invoke", String.class);
+            toolMethod = toolClass.getMethod("use", String.class);
         } catch (NoSuchMethodException e) {
             Log.error("Tool " + toolClass.getName() + " does not have an invoke method");
             return Optional.empty();
@@ -33,6 +33,14 @@ public record ToolInstance(ToolInvocation tool, String name, String description,
     }
 
 
-    
+    public String toJson() {
+        return """
+            {
+                "name": "%s",
+                "description": "%s",
+                "inputSchema": %s
+            }
+        """.formatted(name, description, inputSchema);
+    }
 
 }
