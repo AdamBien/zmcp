@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class EchoCall implements ToolInvocation {
     
-    @ToolSpec(name = "echo", description = "Echo the input, useful for testing", inputSchema = "string")
+    @ToolSpec(name = "echo", description = "Echo the input, useful for testing")
     public Optional<String> use(String parameters) {
         Log.info("echoing: " + parameters);
         return Optional.of("Echo: " + parameters);

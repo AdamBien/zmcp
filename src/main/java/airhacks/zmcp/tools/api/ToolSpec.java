@@ -10,5 +10,9 @@ import java.lang.annotation.Target;
 public @interface ToolSpec {
     String name() default "";
     String description() default "";
-    String inputSchema() default "";
+    String inputSchema() default """
+        {
+            "type": "string"
+        }
+    """;
 }
