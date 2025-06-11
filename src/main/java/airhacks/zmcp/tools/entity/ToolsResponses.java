@@ -17,9 +17,7 @@ public interface ToolsResponses {
                     "id": %d,
                     "result": {
                         "tools": [
-                        {
                         %s
-                        }
                         ]
                     }
                 }
