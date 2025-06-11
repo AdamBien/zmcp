@@ -12,13 +12,7 @@ public @interface ToolSpec {
     String description() default "";
     String inputSchema() default """
         {
-            "type": "object",
-            "properties": {
-                "input": {
-                    "type": "string"
-                }
-            },
-            "required": ["input"]
+            "type": "string"
         }
     """;
 }
