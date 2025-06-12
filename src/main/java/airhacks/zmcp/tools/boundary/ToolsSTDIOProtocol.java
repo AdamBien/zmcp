@@ -70,7 +70,9 @@ public class ToolsSTDIOProtocol implements RequestHandler {
             messageSender.sendInvalidRequest(id, "Error calling tool: " + toolName);
             return;
         }
-        messageSender.send(result.get());
+        var callResult = result.get();
+        var  response =  ToolsResponses.toolCall(id, callResult);
+        messageSender.send(response);
     }
 
     void handleListTools(int id) {

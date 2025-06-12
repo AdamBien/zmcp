@@ -23,4 +23,17 @@ public interface ToolsResponses {
                 }
                  """.formatted(id, toolJson);
     }
+
+    /**
+     * https://modelcontextprotocol.io/specification/2025-03-26/server/tools#calling-tools
+     */
+    static String toolCall(int id, String response) {
+        return """
+                {
+                    "jsonrpc": "2.0",
+                    "id": %d,
+                    "result": %s
+                }
+                """.formatted(id, response);
+    }
 }
