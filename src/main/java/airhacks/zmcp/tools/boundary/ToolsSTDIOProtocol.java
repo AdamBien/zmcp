@@ -12,6 +12,7 @@ import airhacks.zmcp.router.entity.MCPRequest;
 import airhacks.zmcp.tools.control.ToolLocator;
 import airhacks.zmcp.tools.entity.ToolsMethods;
 import airhacks.zmcp.tools.entity.ToolsResponses;
+import airhacks.zmcp.tools.entity.ToolsResposeContent;
 
 /**
  * https://modelcontextprotocol.io/specification/2025-03-26/server/tools#user-interaction-model
@@ -75,7 +76,8 @@ public class ToolsSTDIOProtocol implements RequestHandler {
         }
         Log.info("tools successfully called: " + toolName);
         var callResult = result.get();
-        var  response =  ToolsResponses.toolCallTextContent(id, callResult);
+        var responseContent = ToolsResposeContent.text(callResult);
+        var response =  ToolsResponses.toolCallTextContent(id, responseContent);
         messageSender.send(response);
     }
 

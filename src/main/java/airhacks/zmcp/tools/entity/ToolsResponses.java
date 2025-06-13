@@ -27,17 +27,14 @@ public interface ToolsResponses {
     /**
      * https://modelcontextprotocol.io/specification/2025-03-26/server/tools#calling-tools
      */
-    static String toolCallTextContent(int id, String response) {
+    static String toolCallTextContent(int id, ToolsResposeContent response) {
         return """
                 {
                     "jsonrpc": "2.0",
                     "id": %d,
                     "result": 
-                    [{
-                        "type": "text",
-                        "content": "%s"
-                    }]
+                    [%s]
                 }
-                """.formatted(id, response);
+                """.formatted(id, response.toJson());
     }
 }
