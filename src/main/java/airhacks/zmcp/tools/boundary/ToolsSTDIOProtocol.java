@@ -75,7 +75,7 @@ public class ToolsSTDIOProtocol implements RequestHandler {
         }
         Log.info("tools successfully called: " + toolName);
         var callResult = result.get();
-        var  response =  ToolsResponses.toolCall(id, callResult);
+        var  response =  ToolsResponses.toolCallTextContent(id, callResult);
         messageSender.send(response);
     }
 
