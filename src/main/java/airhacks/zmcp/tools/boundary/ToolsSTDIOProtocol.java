@@ -54,22 +54,26 @@ public class ToolsSTDIOProtocol implements RequestHandler {
 
     }
 
+    /*
+     * https://modelcontextprotocol.io/specification/2025-03-26/server/tools#calling-tools
+     */
     private void handleInvokeTool(int id, JSONObject json) {
-        var toolName = json.getString("tool");
         var params = json.getJSONObject("params");
+        var toolName = params.getString("name");
         var toolInstance = ToolLocator.findTool(toolName);
         if (toolInstance.isEmpty()) {
             Log.error("Tool not found: " + toolName);
             messageSender.sendInvalidRequest(id, "Tool not found: " + toolName);
             return;
         }
-
+        Log.info("tool found: " + toolName);
         var result = toolInstance.get().use(params.toString());
         if (result.isEmpty()) {
             Log.error("Error calling tool: " + toolName);
             messageSender.sendInvalidRequest(id, "Error calling tool: " + toolName);
             return;
         }
+        Log.info("tools successfully called: " + toolName);
         var callResult = result.get();
         var  response =  ToolsResponses.toolCall(id, callResult);
         messageSender.send(response);
