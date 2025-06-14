@@ -32,8 +32,9 @@ public interface ToolsResponses {
                 {
                     "jsonrpc": "2.0",
                     "id": %d,
-                    "result": 
-                    [%s]
+                    "result": {
+                        "content": [%s]
+                    }
                 }
                 """.formatted(id, response.toJson());
     }
