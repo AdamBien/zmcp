@@ -13,7 +13,7 @@ public record ToolsResposeContent(String type, String content) {
         return """
                 {
                     "type": "%s",
-                    "content": "%s"
+                    "content": %s
                 }
                 """.formatted(type, content);
     }
