@@ -2,11 +2,18 @@ package airhacks.zmcp.tools.entity;
 
 import org.json.JSONObject;
 
-public record ToolsResposeContent(String type, String content) {
+public record ToolsResposeContent(String type, String content,boolean error) {
+
+    public ToolsResposeContent{
+        content = JSONObject.quote(content);
+    }
     
     public static ToolsResposeContent text(String content) {
-        var quotedContent = JSONObject.quote(content);
-        return new ToolsResposeContent("text", quotedContent);
+        return new ToolsResposeContent("text", content, false);
+    }
+
+    public static ToolsResposeContent error(String content) {
+        return new ToolsResposeContent("text", content, true);
     }
 
     public String toJson() {

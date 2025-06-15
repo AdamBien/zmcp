@@ -34,9 +34,10 @@ public interface ToolsResponses {
                 {
                     %s,
                     "result": {
-                        "content": [%s]
+                        "content": [%s],
+                        "isError": %s
                     }
                 }
-                """.formatted(header, response.toJson());
+                """.formatted(header, response.toJson(), response.error());
     }
 }
