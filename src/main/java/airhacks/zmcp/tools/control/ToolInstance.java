@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 import airhacks.zmcp.log.boundary.Log;
+import airhacks.zmcp.tools.api.ToolExecutionResult;
 import airhacks.zmcp.tools.api.ToolInvocation;
 import airhacks.zmcp.tools.api.ToolSpec;
 
@@ -28,7 +29,7 @@ public record ToolInstance(ToolInvocation tool, String name, String description,
         return Optional.of(toolDescription);
     }
 
-    public Optional<String> use(String input) {
+    public ToolExecutionResult use(String input) {
         return tool.use(input);
     }
 

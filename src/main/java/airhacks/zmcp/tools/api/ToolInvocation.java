@@ -1,7 +1,5 @@
 package airhacks.zmcp.tools.api;
 
-import java.util.Optional;
-
 /**
  * https://modelcontextprotocol.io/specification/2025-03-26/server/tools#calling-tools
  * 
@@ -9,5 +7,5 @@ import java.util.Optional;
  */
 public interface ToolInvocation {
     
-    Optional<String> use(String parameters);
+    ToolExecutionResult use(String parameters);
 }

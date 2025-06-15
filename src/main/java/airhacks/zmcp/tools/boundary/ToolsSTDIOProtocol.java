@@ -69,14 +69,14 @@ public class ToolsSTDIOProtocol implements RequestHandler {
         }
         Log.info("tool found: " + toolName);
         var result = toolInstance.get().use(params.toString());
-        if (result.isEmpty()) {
+        if (result.emptyContent()) {
             Log.error("Error calling tool: " + toolName);
             messageSender.sendInvalidRequest(id, "Error calling tool: " + toolName);
             return;
         }
         Log.info("tools successfully called: " + toolName);
-        var callResult = result.get();
-        var responseContent = ToolsResposeContent.text(callResult);
+        var callResult = result.content();
+        var responseContent = result.error() ? ToolsResposeContent.error(callResult) : ToolsResposeContent.text(callResult);
         var response =  ToolsResponses.toolCallTextContent(id, responseContent);
         messageSender.send(response);
     }
