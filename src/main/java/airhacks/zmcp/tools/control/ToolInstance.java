@@ -33,6 +33,10 @@ public record ToolInstance(ToolInvocation tool, String name, String description,
         return tool.use(input);
     }
 
+    public boolean hasName(String name) {
+        return this.name.equals(name);
+    }
+
 
     public String toJson() {
         return """

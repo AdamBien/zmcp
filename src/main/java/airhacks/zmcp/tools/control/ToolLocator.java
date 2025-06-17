@@ -16,6 +16,7 @@ public interface ToolLocator {
                 .map(ToolInstance::of)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .filter(tool -> tool.hasName(name))
                 .findFirst();
 
     }
