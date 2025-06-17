@@ -5,8 +5,8 @@ public interface JsonRPCResponses {
     static String header(int id) {
         return """
                 "jsonrpc": "2.0",
-                "id": %d,
-            }"""
+                "id": %d
+            """
             .formatted(id);
     }
 }
