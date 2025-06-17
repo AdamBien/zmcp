@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import airhacks.zmcp.log.boundary.Log;
+import airhacks.zmcp.prompts.boundary.PromptsSTDIOProtocol;
 import airhacks.zmcp.resources.boundary.ResourcesSTDIOProtocol;
 import airhacks.zmcp.router.boundary.FrontDoor;
 import airhacks.zmcp.tools.boundary.ToolsSTDIOProtocol;
@@ -15,13 +16,14 @@ import airhacks.zmcp.tools.boundary.ToolsSTDIOProtocol;
  */
 public interface App {
 
-    String VERSION = "zmcp v2025.06.17.02";     
+    String VERSION = "zmcp v2025.06.17.03";     
 
     static void main(String... args) throws IOException {
         Log.init();
         var frontDoor = new FrontDoor(List.of(
             new ResourcesSTDIOProtocol("."),
-            new ToolsSTDIOProtocol()));
+            new ToolsSTDIOProtocol(),
+            new PromptsSTDIOProtocol()));
         frontDoor.start();
     }
 }

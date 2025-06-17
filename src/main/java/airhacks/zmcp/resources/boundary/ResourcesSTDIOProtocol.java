@@ -125,7 +125,6 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
                                 "list": true,
                                 "listChanged": true
                             }
-
                 """;
         return Optional.of(capability);
     }
