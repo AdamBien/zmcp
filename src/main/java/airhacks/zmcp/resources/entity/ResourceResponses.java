@@ -1,6 +1,7 @@
 package airhacks.zmcp.resources.entity;
 
 import airhacks.App;
+import airhacks.zmcp.jsonrpc.entity.JsonRPCResponses;
 import airhacks.zmcp.resources.control.FileAccess.FileResourceContent;
 
 public interface ResourceResponses {
@@ -13,10 +14,10 @@ public interface ResourceResponses {
      */
     static String initialize(Integer id, String protocolVersion, String capabilities) {
 
+        var header = JsonRPCResponses.header(id);
         return """
                 {
-                    "jsonrpc": "2.0",
-                    "id": %d,
+                    %s,
                     "result": {
                         "protocolVersion": "%s",
                         "serverInfo": {
@@ -28,29 +29,30 @@ public interface ResourceResponses {
                         }
                     }
                 }"""
-                .formatted(id, protocolVersion, App.VERSION, capabilities);
+                .formatted(header, protocolVersion, App.VERSION, capabilities);
     }
 
     static String listResources(Integer id, String resourcesJson) {
+        var header = JsonRPCResponses.header(id);
         return """
                 {
-                    "jsonrpc": "2.0",
-                    "id": %d,
+                    %s,
                     "result": {
                         "resources": [%s]
                     }
                 }"""
-                .formatted(id, resourcesJson);
+                .formatted(header, resourcesJson);
     }
 
     static String ping(int id) {
+        var header = JsonRPCResponses.header(id);
+
         return """
                 {
-                    "jsonrpc": "2.0",
-                    "id": "%d",
+                    %s,
                     "method": "ping"
                 }"""
-                .formatted(id);
+                .formatted(header);
     }
 
     /**
@@ -66,10 +68,10 @@ public interface ResourceResponses {
         var mimeType = resource.mimeType();
         var encodedContent = resource.encodedContent();
         var contentKey = resource.isBlob() ? "blob" : " text";
+        var header = JsonRPCResponses.header(id);
         return """
                 {
-                    "jsonrpc": "2.0",
-                    "id": %d,
+                    %s,
                     "result": {
                         "contents": [
                         {
@@ -79,7 +81,7 @@ public interface ResourceResponses {
                         }
                         ]
                     }
-                }""".formatted(id, uri, mimeType, contentKey, encodedContent);
+                }""".formatted(header, uri, mimeType, contentKey, encodedContent);
     }
 
 
