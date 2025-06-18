@@ -31,7 +31,7 @@ public record PromptArgument(String name, String description, boolean required) 
                 {
                     "name": "%s",
                     "description": "%s",
-                    "required": "%b"
+                    "required": %b
                 }
                 """.formatted(name, description, required);
     }

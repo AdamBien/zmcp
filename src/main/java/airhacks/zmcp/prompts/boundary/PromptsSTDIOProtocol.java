@@ -26,7 +26,7 @@ public class PromptsSTDIOProtocol implements RequestHandler {
         return Optional.of("""
                             "prompts": {
                             "listChanged": true
-                    }
+                            }
                 """);
     }
 
