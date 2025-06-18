@@ -6,7 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import airhacks.zmcp.log.boundary.Log;
-import airhacks.zmcp.prompts.control.PromptLocator;
+import airhacks.zmcp.prompts.control.PromptLoader;
 import airhacks.zmcp.prompts.entity.PromptResponses;
 import airhacks.zmcp.prompts.entity.PromptsMethods;
 import airhacks.zmcp.resources.control.MessageSender;
@@ -16,10 +16,11 @@ import airhacks.zmcp.router.entity.MCPRequest;
 public class PromptsSTDIOProtocol implements RequestHandler {
 
     MessageSender messageSender;
+    PromptLoader promptLoader;
 
-    public PromptsSTDIOProtocol() {
+    public PromptsSTDIOProtocol(String promptsDir) {
         this.messageSender = new MessageSender();
-
+        this.promptLoader = new PromptLoader(promptsDir);
     }
 
     public Optional<String> capability() {
@@ -64,12 +65,25 @@ public class PromptsSTDIOProtocol implements RequestHandler {
     }
 
     void handleListPrompts(int id) {
-        var prompts = PromptLocator.all();
+        var prompts = promptLoader.all();
         var response = PromptResponses.listPrompts(id, prompts);
         messageSender.send(response);
     }
 
+    /*
+     * https://modelcontextprotocol.io/specification/2025-03-26/server/prompts#
+     * getting-a-prompt
+     */
     void handleGetPrompt(int id, JSONObject json) {
-
+        var params = json.getJSONObject("params");
+        var toolName = params.getString("name");
+        var prompt = this.promptLoader.get(toolName);
+        if (prompt.isEmpty()) {
+            Log.error("Prompt not found: " + toolName);
+            messageSender.sendInvalidRequest(id, "Prompt not found: " + toolName);
+            return;
+        }
+        var response = PromptResponses.getPrompt(id, prompt.get());
+        messageSender.send(response);
     }
 }

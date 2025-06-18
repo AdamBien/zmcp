@@ -24,4 +24,14 @@ public interface PromptResponses {
                 }
                 """.formatted(header, promptJson);
     }
+
+    static String getPrompt(int id, Prompt prompt) {
+        var header = JsonRPCResponses.header(id);
+        return """
+                    {
+                    %s,
+                    "result": %s
+                    }
+                    """.formatted(header, "");
+    }
 }
