@@ -1,5 +1,7 @@
 package airhacks.zmcp.prompts.entity;
 
+import org.json.JSONObject;
+
 /**
  * Example:
  * {
@@ -34,5 +36,15 @@ public record PromptArgument(String name, String description, boolean required) 
                     "required": %b
                 }
                 """.formatted(name, description, required);
+    }
+
+    public static PromptArgument fromJson(Object json) {
+        if (json instanceof JSONObject jsonObject) {
+            var name = jsonObject.getString("name");
+            var description = jsonObject.getString("description");
+            var required = jsonObject.getBoolean("required");
+            return new PromptArgument(name, description, required);
+        }
+        throw new IllegalArgumentException("Object is not a JSONObject: " + json);
     }
 }
