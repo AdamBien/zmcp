@@ -16,7 +16,7 @@ import airhacks.zmcp.tools.boundary.ToolsSTDIOProtocol;
  */
 public interface App {
 
-    String VERSION = "zmcp v2025.06.17.03";     
+    String VERSION = "zmcp v2025.06.18.01";     
 
     static void main(String... args) throws IOException {
         Log.init();
