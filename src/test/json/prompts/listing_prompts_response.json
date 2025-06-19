@@ -1,0 +1,19 @@
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "prompts": [
+        {
+          "name": "code_review",
+          "description": "Asks the LLM to analyze code quality and suggest improvements",
+          "arguments": [
+            {
+              "name": "code",
+              "description": "The code to review",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  }
