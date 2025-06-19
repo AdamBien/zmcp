@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
-public record Prompt(String name, String description, List<PromptArgument> arguments) {
+public record PromptAnnouncement(String name, String description, List<PromptArgument> arguments) {
     
     public String toJson() {
         var argumentsJson = arguments.stream()
@@ -22,7 +22,7 @@ public record Prompt(String name, String description, List<PromptArgument> argum
                 """.formatted(name, description, argumentsJson);
     }
 
-    public Prompt fromJson(String json) {
+    public PromptAnnouncement fromJson(String json) {
         var jsonObject = new JSONObject(json);
         var name = jsonObject.getString("name");
         var description = jsonObject.getString("description");
@@ -32,6 +32,6 @@ public record Prompt(String name, String description, List<PromptArgument> argum
                 .stream()
                 .map(PromptArgument::fromJson)
                 .toList();
-        return new Prompt(name, description, argumentsList);
+        return new PromptAnnouncement(name, description, argumentsList);
     }
 }

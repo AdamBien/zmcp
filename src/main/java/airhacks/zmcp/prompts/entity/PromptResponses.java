@@ -7,10 +7,10 @@ import airhacks.zmcp.jsonrpc.entity.JsonRPCResponses;
 
 public interface PromptResponses {
 
-    static String listPrompts(int id, List<Prompt> prompts) {
+    static String listPrompts(int id, List<PromptAnnouncement> prompts) {
         var promptJson = prompts
                 .stream()
-                .map(Prompt::toJson)
+                .map(PromptAnnouncement::toJson)
                 .collect(Collectors.joining(","));
         var header = JsonRPCResponses.header(id);
         return """
