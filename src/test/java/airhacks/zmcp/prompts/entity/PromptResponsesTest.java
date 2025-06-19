@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import airhacks.zmcp.JSONAssertions;
 import airhacks.zmcp.JSONLoader;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PromptResponsesTest {
 
@@ -20,6 +20,6 @@ public class PromptResponsesTest {
                         new PromptArgument("code", "The code to review", true))));
         var response = PromptResponses.listPrompts(1, prompts);
         var expected = JSONLoader.load("prompts", "listing_prompts_response");
-        assertThat(response).isEqualTo(expected);
+        JSONAssertions.assertEquals(response, expected);
     }
 }
