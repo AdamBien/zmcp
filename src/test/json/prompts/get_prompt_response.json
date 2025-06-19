@@ -1,0 +1,16 @@
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "description": "Code review prompt",
+      "messages": [
+        {
+          "role": "user",
+          "content": {
+            "type": "text",
+            "text": "Hello, world!"
+          }
+        }
+      ]
+    }
+  }

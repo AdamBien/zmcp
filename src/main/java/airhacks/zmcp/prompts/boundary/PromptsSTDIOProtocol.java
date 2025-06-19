@@ -83,7 +83,7 @@ public class PromptsSTDIOProtocol implements RequestHandler {
             messageSender.sendInvalidRequest(id, "Prompt not found: " + toolName);
             return;
         }
-        var response = PromptResponses.getPrompt(id, prompt.get());
-        messageSender.send(response);
+       // var response = PromptResponses.getPrompt(id, prompt.get());
+        //messageSender.send(response);
     }
 }
