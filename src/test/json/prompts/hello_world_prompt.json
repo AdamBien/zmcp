@@ -1,0 +1,6 @@
+{
+    "description": "Hello world prompt",
+    "role": "user",
+    "type": "text",
+    "content": "Hello, world!"
+}
