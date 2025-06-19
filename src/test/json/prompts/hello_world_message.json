@@ -1,0 +1,7 @@
+{
+    "role": "user",
+    "content": {
+        "type": "text",
+        "text": "Hello, world!"
+    }
+}
