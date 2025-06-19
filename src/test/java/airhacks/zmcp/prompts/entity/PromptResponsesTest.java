@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import airhacks.zmcp.JSONLoader;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PromptResponsesTest {
@@ -16,7 +19,7 @@ public class PromptResponsesTest {
                 new Prompt("code_review", "Asks the LLM to analyze code quality and suggest improvements", List.of(
                         new PromptArgument("code", "The code to review", true))));
         var response = PromptResponses.listPrompts(1, prompts);
-        var expected = Files.readString(Path.of("src/test/json/prompts/listing_prompts_response.json"));
+        var expected = JSONLoader.load("prompts", "listing_prompts_response");
         assertThat(response).isEqualTo(expected);
     }
 }
