@@ -46,10 +46,9 @@ public record FileAccess(Path rootFolder) {
                 var stringified = new String(this.content);
                 return JSONObject.quote(stringified);
             }
-            var encodedBytes = Base64
+            return Base64
                     .getEncoder()
                     .encodeToString(this.content);
-            return "\"%s\"".formatted(encodedBytes);
         }
     }
 
