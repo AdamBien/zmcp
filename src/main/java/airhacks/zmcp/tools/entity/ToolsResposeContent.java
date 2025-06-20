@@ -4,10 +4,6 @@ import org.json.JSONObject;
 
 public record ToolsResposeContent(String type, String content,boolean error) {
 
-    public ToolsResposeContent{
-        content = JSONObject.quote(content);
-    }
-    
     public static ToolsResposeContent text(String content) {
         return new ToolsResposeContent("text", content, false);
     }
@@ -16,13 +12,14 @@ public record ToolsResposeContent(String type, String content,boolean error) {
         return new ToolsResposeContent("text", content, true);
     }
 
+    /**
+     * https://modelcontextprotocol.io/specification/2025-03-26/server/tools#calling-tools
+     */
     public String toJson() {
-        return """
-                {
-                    "type": "%s",
-                    "text": %s
-                }
-                """.formatted(type, content);
+        var json = new JSONObject();
+        json.put("type", type);
+        json.put("text", content);
+        return json.toString(1);
     }
 
 }
