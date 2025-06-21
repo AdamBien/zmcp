@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.json.JSONObject;
+
 import airhacks.zmcp.log.boundary.Log;
 
 public record Resource(
@@ -24,11 +26,10 @@ public record Resource(
         return new Resource(uri, name, mimeType);
     }
     public String toJson() {
-        return """
-                {
-                    "uri": "%s",
-                    "name": "%s",
-                    "mimeType": "%s"
-                }""".formatted(uri(), name(), mimeType());
+        var json = new JSONObject();
+        json.put("uri", uri());
+        json.put("name", name());
+        json.put("mimeType", mimeType());
+        return json.toString();
     }
 }
