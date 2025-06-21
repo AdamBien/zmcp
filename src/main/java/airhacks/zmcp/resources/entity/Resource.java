@@ -11,6 +11,7 @@ import airhacks.zmcp.log.boundary.Log;
 public record Resource(
         String uri,
         String name,
+        String title,
         String mimeType) {
 
 
@@ -23,12 +24,14 @@ public record Resource(
         } catch (IOException e) {
             Log.error("Error probing mime type: " + e);
         }
-        return new Resource(uri, name, mimeType);
+        var title = name;
+        return new Resource(uri, name, title, mimeType);
     }
     public String toJson() {
         var json = new JSONObject();
         json.put("uri", uri());
         json.put("name", name());
+        json.put("title", title());
         json.put("mimeType", mimeType());
         return json.toString();
     }
