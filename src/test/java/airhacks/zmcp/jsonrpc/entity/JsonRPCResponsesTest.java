@@ -13,7 +13,6 @@ public class JsonRPCResponsesTest {
                     "jsonrpc": "2.0",
                     "id": 1                    
                 """;
-
         assertThat(actual).isEqualTo(expected);
     }
 }
