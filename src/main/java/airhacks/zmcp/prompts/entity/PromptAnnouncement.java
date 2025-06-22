@@ -1,25 +1,25 @@
 package airhacks.zmcp.prompts.entity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
 public record PromptAnnouncement(String name, String description, List<PromptArgument> arguments) {
-    
+
+    /**
+     * 
+     * https://modelcontextprotocol.io/specification/2025-03-26/server/prompts#listing-prompts
+     */
+
     public String toJson() {
         var argumentsJson = arguments.stream()
-                .map(PromptArgument::toJson)
-                .collect(Collectors.joining(","));
-        return """
-                {
-                    "name": "%s",
-                    "description": "%s",
-                    "arguments": [
-                        %s
-                    ]
-                }
-                """.formatted(name, description, argumentsJson);
+        .map(PromptArgument::toJson)
+        .toList();
+        var jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("description", description);
+        jsonObject.put("arguments", argumentsJson);
+        return jsonObject.toString();
     }
 
     public PromptAnnouncement fromJson(String json) {
