@@ -1,5 +1,7 @@
 package airhacks.zmcp.jsonrpc.entity;
 
+import org.json.JSONObject;
+
 public interface ErrorResponses {
 
     static String unsupportedProtocolVersion(int id, String message,String supported,String requested) {
@@ -21,15 +23,15 @@ public interface ErrorResponses {
     }
 
     static String error(int id, int code, String message) {
-        return """
-            {
-                "jsonrpc": "2.0",
-                "id": %d,
-                "error": {
-                    "code": %d,
-                    "message": "%s"
-                }
-            }"""
-            .formatted(id, code, message);
+        var jsonObject = new JSONObject();
+        jsonObject.put("jsonrpc", "2.0");
+        jsonObject.put("id", id);
+        
+        var errorObject = new JSONObject();
+        errorObject.put("code", code);
+        errorObject.put("message", message);
+        jsonObject.put("error", errorObject);
+        
+        return jsonObject.toString();
     }
 }
