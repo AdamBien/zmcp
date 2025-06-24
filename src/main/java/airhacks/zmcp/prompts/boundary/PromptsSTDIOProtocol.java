@@ -1,5 +1,6 @@
 package airhacks.zmcp.prompts.boundary;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.json.JSONException;
@@ -18,7 +19,7 @@ public class PromptsSTDIOProtocol implements RequestHandler {
     MessageSender messageSender;
     PromptLoader promptLoader;
 
-    public PromptsSTDIOProtocol(String promptsDir) {
+    public PromptsSTDIOProtocol(Path promptsDir) {
         this.messageSender = new MessageSender();
         this.promptLoader = new PromptLoader(promptsDir);
     }

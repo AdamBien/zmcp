@@ -12,9 +12,6 @@ import airhacks.zmcp.prompts.entity.PromptArgument;
 
 public record PromptLoader(Path promptsDir) {
 
-    public PromptLoader(String promptsDir) {
-        this(Path.of(promptsDir));
-    }
 
     public List<PromptAnnouncement> all() {
         return List.of(

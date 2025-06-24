@@ -1,6 +1,7 @@
 package airhacks;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import airhacks.zmcp.log.boundary.Log;
@@ -16,17 +17,17 @@ import airhacks.zmcp.tools.boundary.ToolsSTDIOProtocol;
  */
 public interface App {
 
-    String VERSION = "zmcp v2025.06.23.01";     
+    String VERSION = "zmcp v2025.06.24.01";     
 
-    String RESOURCE_DIR =".";
-    String PROMPTS_DIR = "./prompts";
+    Path RESOURCE_DIR = Path.of(".");
+    Path PROMPTS_DIR = Path.of("./prompts");
 
-    record Arguments(String resourceDir,String promptsDir){
+    record Arguments(Path resourceDir,Path promptsDir){
 
         static Arguments from(String... args){
             return new Arguments(
-                args.length > 0 ? args[0]: RESOURCE_DIR,
-                args.length > 1 ? args[1] : PROMPTS_DIR);
+                args.length > 0 ? Path.of(args[0]) : RESOURCE_DIR,
+                args.length > 1 ? Path.of(args[1]) : PROMPTS_DIR);
               
         }
     }

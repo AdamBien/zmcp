@@ -18,8 +18,8 @@ public record FileAccess(Path rootFolder) {
             "text/javascript", "application/json", "application/xml");
     static String UNKNOWN_MIME_TYPE = "application/octet-stream";
 
-    public static FileAccess of(String rootFolder) {
-        return new FileAccess(Path.of(rootFolder));
+    public static FileAccess of(Path rootFolder) {
+        return new FileAccess(rootFolder);
     }
 
     public List<Resource> listResources() {

@@ -1,5 +1,6 @@
 package airhacks.zmcp.resources.boundary;
 
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
     MessageSender messageSender;
     FileAccess fileAccess;
     
-    public ResourcesSTDIOProtocol(String rootFolder) {
+    public ResourcesSTDIOProtocol(Path rootFolder) {
         this.fileAccess = FileAccess.of(rootFolder);
         this.messageSender = new MessageSender();
     }
