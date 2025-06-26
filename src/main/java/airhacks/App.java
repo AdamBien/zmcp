@@ -39,7 +39,7 @@ public interface App {
     static void main(String... args) throws IOException {
         Log.init();
         var arguments = Arguments.from(args);
-        arguments.userInfo()
+        arguments.userInfo();
         var frontDoor = new FrontDoor(List.of(
             new ResourcesSTDIOProtocol(arguments.resourceDir()),
             new ToolsSTDIOProtocol(),
