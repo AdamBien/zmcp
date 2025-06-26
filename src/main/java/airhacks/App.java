@@ -30,11 +30,16 @@ public interface App {
                 args.length > 1 ? Path.of(args[1]) : PROMPTS_DIR);
               
         }
+
+        void userInfo(){
+            Log.info("resources: %s prompts directory: %s".formatted(resourceDir(),promptsDir()));
+        }
     }
 
     static void main(String... args) throws IOException {
         Log.init();
         var arguments = Arguments.from(args);
+        arguments.userInfo()
         var frontDoor = new FrontDoor(List.of(
             new ResourcesSTDIOProtocol(arguments.resourceDir()),
             new ToolsSTDIOProtocol(),
