@@ -25,11 +25,12 @@ public record PromptSignature(String name, String description, List<PromptArgume
         return jsonObject.toString();
     }
 
-    public PromptSignature fromJson(String json) {
+    public static PromptSignature fromJson(String json) {
         var jsonObject = new JSONObject(json);
-        var name = jsonObject.getString("name");
-        var description = jsonObject.getString("description");
-        var arguments = jsonObject.getJSONArray("arguments");
+        var signature = jsonObject.getJSONObject("signature");
+        var name = signature.getString("name");
+        var description = signature.getString("description");
+        var arguments = signature.getJSONArray("arguments");
         var argumentsList = arguments
                 .toList()
                 .stream()
