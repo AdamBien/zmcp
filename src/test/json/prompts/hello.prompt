@@ -1,0 +1,13 @@
+{
+    "prompt": {
+        "description": "Hello prompt",
+        "role": "user",
+        "type": "text",
+        "content": "Welcome the Java developer with a nice, funny message."
+    },
+    "signature": {
+        "name": "hello",
+        "description": "Greets Java developers",
+        "arguments": []
+    }
+}

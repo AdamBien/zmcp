@@ -1,6 +1,13 @@
 {
-    "description": "Hello world prompt",
-    "role": "user",
-    "type": "text",
-    "content": "Hello, world!"
+    "prompt": {
+        "description": "Hello world prompt",
+        "role": "user",
+        "type": "text",
+        "content": "Hello, world!"
+    },
+    "signature": {
+        "name": "hello_world",
+        "description": "Hello world prompt",
+        "arguments": []
+    }
 }
