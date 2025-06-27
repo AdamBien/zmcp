@@ -18,7 +18,7 @@ public class PromptAnnouncementTest {
                     ]
                 }
                 """;
-        var announcement = new PromptAnnouncement("code_review", "Asks the LLM to analyze code quality and suggest improvements",
+        var announcement = new PromptSignature("code_review", "Asks the LLM to analyze code quality and suggest improvements",
                 List.of(new PromptArgument("code", "The code to review", true)));
         var actual = announcement.toJson();
         JSONAssertions.assertEquals(actual,expected);

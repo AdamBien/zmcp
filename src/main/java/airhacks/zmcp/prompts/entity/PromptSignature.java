@@ -3,8 +3,11 @@ package airhacks.zmcp.prompts.entity;
 import java.util.List;
 
 import org.json.JSONObject;
-
-public record PromptAnnouncement(String name, String description, List<PromptArgument> arguments) {
+/**
+ * The prompt signature. Used for listing prompts.
+ * https://modelcontextprotocol.io/specification/2025-03-26/server/prompts#listing-prompts
+ */
+public record PromptSignature(String name, String description, List<PromptArgument> arguments) {
 
     /**
      * 
@@ -22,7 +25,7 @@ public record PromptAnnouncement(String name, String description, List<PromptArg
         return jsonObject.toString();
     }
 
-    public PromptAnnouncement fromJson(String json) {
+    public PromptSignature fromJson(String json) {
         var jsonObject = new JSONObject(json);
         var name = jsonObject.getString("name");
         var description = jsonObject.getString("description");
@@ -32,6 +35,6 @@ public record PromptAnnouncement(String name, String description, List<PromptArg
                 .stream()
                 .map(PromptArgument::fromJson)
                 .toList();
-        return new PromptAnnouncement(name, description, argumentsList);
+        return new PromptSignature(name, description, argumentsList);
     }
 }

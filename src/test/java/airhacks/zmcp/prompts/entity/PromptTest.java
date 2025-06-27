@@ -11,7 +11,7 @@ public class PromptTest {
     @Test
     void fromJson() {
         var json = JSONLoader.loadPromptResponse("hello_world_prompt");
-        var prompt = Prompt.fromJson(json);
+        var prompt = PromptInstance.fromJson(json);
         assertThat(prompt.description()).isEqualTo("Hello world prompt");
         var message = prompt.message();
         assertThat(message).isNotNull();

@@ -13,7 +13,7 @@ public class PromptResponsesTest {
     @Test
     void listPrompts() {
         var prompts = List.of(
-                new PromptAnnouncement("code_review", "Asks the LLM to analyze code quality and suggest improvements", List.of(
+                new PromptSignature("code_review", "Asks the LLM to analyze code quality and suggest improvements", List.of(
                         new PromptArgument("code", "The code to review", true))));
         var actual = PromptResponses.listPrompts(1, prompts);
         var expected = JSONLoader.load("promptresponses", "listing_prompts_response");

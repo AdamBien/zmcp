@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 import airhacks.zmcp.log.boundary.Log;
-import airhacks.zmcp.prompts.entity.PromptAnnouncement;
+import airhacks.zmcp.prompts.entity.PromptSignature;
 import airhacks.zmcp.prompts.entity.PromptArgument;
 
 public record PromptLoader(Path promptsDir) {
 
 
-    public List<PromptAnnouncement> all() {
+    public List<PromptSignature> all() {
         return List.of(
-                new PromptAnnouncement("code_review", "Asks the LLM to analyze code quality and suggest improvements",
+                new PromptSignature("code_review", "Asks the LLM to analyze code quality and suggest improvements",
                         List.of(new PromptArgument("code", "The code to review", true))));
 
     }
@@ -44,7 +44,7 @@ public record PromptLoader(Path promptsDir) {
         }
     }
 
-    public Optional<PromptAnnouncement> get(String name) {
+    public Optional<PromptSignature> get(String name) {
         Log.info("getting prompt: " + name);
         return Optional.of(all().getFirst());
     }
