@@ -49,9 +49,9 @@ public record PromptLoader(Path promptsDir) {
         }
     }
 
-    public Optional<PromptSignature> get(String name) {
+    public Optional<PromptInstance> get(String name) {
         Log.info("getting prompt: " + name);
-        return Optional.of(all().getFirst());
+        return Optional.of(allPrompts().getFirst());
     }
 
 }

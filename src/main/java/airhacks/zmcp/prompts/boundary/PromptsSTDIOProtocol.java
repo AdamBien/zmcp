@@ -77,15 +77,15 @@ public class PromptsSTDIOProtocol implements RequestHandler {
      */
     void handleGetPrompt(int id, JSONObject json) {
         var params = json.getJSONObject("params");
-        var toolName = params.getString("name");
-        var prompt = this.promptLoader.get(toolName);
+        var promptName = params.getString("name");
+        var prompt = this.promptLoader.get(promptName);
         if (prompt.isEmpty()) {
-            Log.error("Prompt not found: " + toolName);
-            messageSender.sendInvalidRequest(id, "Prompt not found: " + toolName);
+            Log.error("Prompt not found: " + promptName);
+            messageSender.sendInvalidRequest(id, "Prompt not found: " + promptName);
             return;
         }
-        
-       // var response = PromptResponses.getPrompt(id, prompt.get());
-        //messageSender.send(response);
+
+        var response = PromptResponses.getPrompt(id, prompt.get());
+        messageSender.send(response);
     }
 }

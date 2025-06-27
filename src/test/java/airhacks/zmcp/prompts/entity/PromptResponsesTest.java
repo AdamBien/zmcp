@@ -23,7 +23,7 @@ public class PromptResponsesTest {
     @Test
     void getPrompt() {
         var description = "Code review prompt";
-        var actual = PromptResponses.getPrompt(1,  description, new Message("user", "text", "Hello, world!"));
+        var actual = PromptResponses.getPrompt(1,  new PromptInstance(new PromptSignature("code_review", "Code review prompt", List.of(new PromptArgument("code", "The code to review", true))), description, new Message("user", "text", "Hello, world!")));
         var expected = JSONLoader.loadPromptResponse("get_prompt_response");
         JSONAssertions.assertEquals(actual, expected);
     }

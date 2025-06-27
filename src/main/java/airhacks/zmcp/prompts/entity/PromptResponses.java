@@ -25,7 +25,7 @@ public interface PromptResponses {
                 """.formatted(header, promptJson);
     }
 
-    static String getPrompt(int id, String description,Message message) {
+    static String getPrompt(int id, PromptInstance prompt) {
         var header = JsonRPCResponses.header(id);
         return """
                     {
@@ -37,6 +37,6 @@ public interface PromptResponses {
                         ]
                     }
                     }
-                    """.formatted(header, description, message.toJson());
+                    """.formatted(header, prompt.description(), prompt.message().toJson());
     }
 }
