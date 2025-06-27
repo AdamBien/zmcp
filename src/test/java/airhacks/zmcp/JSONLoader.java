@@ -14,4 +14,9 @@ public interface JSONLoader {
             throw new IllegalArgumentException("Error loading JSON file: " + path, e);
         }
     }
+
+    static String loadPromptResponse(String file)  {
+        return load("promptresponses", file);
+    }
+
 }

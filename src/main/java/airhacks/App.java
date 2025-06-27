@@ -17,7 +17,7 @@ import airhacks.zmcp.tools.boundary.ToolsSTDIOProtocol;
  */
 public interface App {
 
-    String VERSION = "zmcp v2025.06.24.01";     
+    String VERSION = "zmcp v2025.06.27.01";     
 
     Path RESOURCE_DIR = Path.of(".");
     Path PROMPTS_DIR = Path.of("./prompts");
