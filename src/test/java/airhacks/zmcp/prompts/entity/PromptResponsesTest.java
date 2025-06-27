@@ -16,7 +16,7 @@ public class PromptResponsesTest {
                 new PromptAnnouncement("code_review", "Asks the LLM to analyze code quality and suggest improvements", List.of(
                         new PromptArgument("code", "The code to review", true))));
         var actual = PromptResponses.listPrompts(1, prompts);
-        var expected = JSONLoader.load("prompts", "listing_prompts_response");
+        var expected = JSONLoader.load("promptresponses", "listing_prompts_response");
         JSONAssertions.assertEquals(actual, expected);
     }
 
@@ -24,7 +24,7 @@ public class PromptResponsesTest {
     void getPrompt() {
         var description = "Code review prompt";
         var actual = PromptResponses.getPrompt(1,  description, new Message("user", "text", "Hello, world!"));
-        var expected = JSONLoader.load("prompts", "get_prompt_response");
+        var expected = JSONLoader.loadPromptResponse("get_prompt_response");
         JSONAssertions.assertEquals(actual, expected);
     }
 }

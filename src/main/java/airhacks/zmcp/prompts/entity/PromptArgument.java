@@ -28,12 +28,12 @@ import org.json.JSONObject;
  */
 public record PromptArgument(String name, String description, boolean required) {
 
-    public String toJson() {
+    public JSONObject toJson() {
         var jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("description", description);
         jsonObject.put("required", required);
-        return jsonObject.toString();
+        return jsonObject;
     }
 
     public static PromptArgument fromJson(Object json) {
