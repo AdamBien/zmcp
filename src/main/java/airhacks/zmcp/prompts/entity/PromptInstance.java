@@ -19,4 +19,8 @@ public record PromptInstance(PromptSignature signature, String description, Mess
         var message = new Message(role, type, content);   
         return new PromptInstance(signature, description, message);
     }
+
+    public boolean hasName(String name) {
+        return signature.name().equals(name);
+    }
 }

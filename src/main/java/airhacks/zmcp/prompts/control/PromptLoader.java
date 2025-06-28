@@ -20,10 +20,17 @@ public record PromptLoader(Path promptsDir) {
         .toList();
 
     }
+    static String nameFromPath(Path path){
+        return path.getFileName()
+        .toString()
+        .replace(".json", "");
+    }
+
 
     record PromptFile(Path path,String content){
      
     public PromptInstance toPromptInstance(){
+        
         return PromptInstance.fromJson(this.content);
     }
 
@@ -57,7 +64,10 @@ public record PromptLoader(Path promptsDir) {
 
     public Optional<PromptInstance> get(String name) {
         Log.info("getting prompt: " + name);
-        return Optional.of(allPrompts().getFirst());
+        return allPrompts()
+        .stream()
+        .filter(prompt -> prompt.hasName(name))
+        .findFirst();
     }
 
 }
