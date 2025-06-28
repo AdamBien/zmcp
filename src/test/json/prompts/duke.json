@@ -1,0 +1,13 @@
+{
+    "prompt": {
+        "description": "duke prompt",
+        "role": "user",
+        "type": "text",
+        "content": "who is duke?"
+    },
+    "signature": {
+        "name": "duke",
+        "description": "Asks who is duke",
+        "arguments": []
+    }
+}

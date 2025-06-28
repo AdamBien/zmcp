@@ -21,4 +21,13 @@ public class PromptLoaderTest {
         var name = PromptLoader.nameFromPath(path);
         assertThat(name).isEqualTo("duke");
     }
+
+    @Test
+    void findPromptByName() {
+        var promptsDir = Path.of("src/test/json/prompts");
+        var loader = new PromptLoader(promptsDir);
+        var prompt = loader.get("duke");
+        assertThat(prompt).isNotNull();
+        assertThat(prompt.get().signature().name()).isEqualTo("duke");
+    }
 }
