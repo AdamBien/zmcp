@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.prompts.entity.PromptInstance;
@@ -40,6 +41,7 @@ public record PromptLoader(Path promptsDir) {
         try {
             return Files.list(this.promptsDir)
             .filter(Files::isRegularFile)
+            .filter(isJSON())
             .map(PromptFile::from)
             .map(PromptFile::toPromptInstance)
             .toList();
@@ -47,6 +49,10 @@ public record PromptLoader(Path promptsDir) {
             Log.error("Error reading prompts directory: " + e);
             return List.of();
         }
+    }
+
+    Predicate<? super Path> isJSON() {
+        return path -> path.getFileName().toString().endsWith(".json");
     }
 
     public Optional<PromptInstance> get(String name) {

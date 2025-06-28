@@ -5,6 +5,6 @@ A lightweight, zero-dependency implementation of the Model Context Protocol (MCP
 
 ## Features
 
-- Support for [MCP - **Prompts**](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts) - define reusable prompt templates with arguments
-- Access to [MCP **Resources**:](https://modelcontextprotocol.io/specification/2025-06-18/server/resources) - read and list files and directories
-- Integration with [MCP **Tools**:](https://modelcontextprotocol.io/specification/2025-06-18/server/tools) - execute custom functions and operations
+- Support for [**Prompts**](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts) - define reusable prompt templates with arguments
+- Access to [**Resources**:](https://modelcontextprotocol.io/specification/2025-06-18/server/resources) - read and list files and directories
+- Integration with [**Tools**:](https://modelcontextprotocol.io/specification/2025-06-18/server/tools) - execute custom functions and operations
