@@ -28,6 +28,6 @@ public class PromptLoaderTest {
         var loader = new PromptLoader(promptsDir);
         var prompt = loader.get("duke");
         assertThat(prompt).isNotNull();
-        assertThat(prompt.get().signature().name()).isEqualTo("duke");
+        assertThat(prompt.get().name()).isEqualTo("duke");
     }
 }

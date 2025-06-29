@@ -23,4 +23,8 @@ public record PromptInstance(PromptSignature signature, String description, Mess
     public boolean hasName(String name) {
         return signature.name().equals(name);
     }
+
+    public String name(){
+        return signature.name();
+    }
 }
