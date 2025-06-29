@@ -31,7 +31,7 @@ public interface PromptResponses {
                     {
                     %s,
                     "result": {
-                        "description": %s,
+                        "description": "%s",
                         "messages": [
                             %s
                         ]
