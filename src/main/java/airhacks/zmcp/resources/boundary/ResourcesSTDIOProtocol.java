@@ -32,10 +32,11 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
 
     public boolean handleRequest(MCPRequest request) {
         Log.info("Processing request: " + request);
+        var method = request.method();
+        var id = request.id();
+        var json = request.json();
+
         try {
-            var method = request.method();
-            var id = request.id();
-            var json = request.json();
 
             var optionalProtocol = ResourcesMethods.fromString(method);
             if (optionalProtocol.isEmpty()) {
@@ -53,10 +54,10 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
             }
         } catch (JSONException e) {
             Log.error("Error parsing JSON request: " + e);
-            messageSender.sendError(null, -32700, "Invalid JSON-RPC request format");
+            messageSender.sendError(id, -32700, "Invalid JSON-RPC request format");
         } catch (Exception e) {
             Log.error("Error handling request: " + e);
-            messageSender.sendError(null, -32603, "Internal error: " + e.getMessage());
+            messageSender.sendError(id, -32603, "Internal error: " + e.getMessage());
         }
         return true;
     }
