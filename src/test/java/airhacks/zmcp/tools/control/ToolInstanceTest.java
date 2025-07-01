@@ -1,8 +1,11 @@
 package airhacks.zmcp.tools.control;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import airhacks.zmcp.JSONAssertions;
 import airhacks.zmcp.tools.api.ToolSpec;
 
 public class ToolInstanceTest {
@@ -19,5 +22,32 @@ public class ToolInstanceTest {
                 .getDeclaredMethod("inputSchema")
                 .getDefaultValue();
         Assertions.assertThat(toolDescriptionValue.inputSchema()).isEqualTo(expectedInputSchema);
+    }
+
+    @Test
+    void toJson() {
+        var tool = new EchoCall();
+        var optionalInstance = ToolInstance.of(tool);
+        assertThat(optionalInstance.isPresent()).isTrue();
+        var toolInstance = optionalInstance.get();
+        var actual = toolInstance.toJson();
+        var expected = """
+                {
+                    "inputSchema": {
+                        "type": "object",
+                        "properties": {
+                            "input": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "input"
+                        ]
+                    },
+                    "name": "echo",
+                    "description": "Echo the input, useful for testing"
+                }
+                """;
+        JSONAssertions.assertEquals(actual, expected);
     }
 }
