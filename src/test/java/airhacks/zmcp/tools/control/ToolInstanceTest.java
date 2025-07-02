@@ -13,7 +13,7 @@ public class ToolInstanceTest {
     @Test
     void creation() throws Exception {
         var tool = new EchoCall();
-        var toolDescription = ToolInstance.of(tool::apply);
+        var toolDescription = ToolInstance.of(tool);
         Assertions.assertThat(toolDescription).isPresent();
         var toolDescriptionValue = toolDescription.get();
         Assertions.assertThat(toolDescriptionValue.name()).isEqualTo("echo");
@@ -27,7 +27,7 @@ public class ToolInstanceTest {
     @Test
     void toJson() {
         var tool = new EchoCall();
-        var optionalInstance = ToolInstance.of(tool::apply);
+        var optionalInstance = ToolInstance.of(tool);
         assertThat(optionalInstance.isPresent()).isTrue();
         var toolInstance = optionalInstance.get();
         var actual = toolInstance.toJson();

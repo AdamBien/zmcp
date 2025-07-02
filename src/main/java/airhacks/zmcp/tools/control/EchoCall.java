@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import airhacks.zmcp.log.boundary.Log;
 
-public class EchoCall implements Function<String, Map> {
+public class EchoCall implements Function<String, Map<String, String>> {
 
     static Map<String,String> TOOL_SPEC = Map.of("name", "echo",
                                        "description", "Echo the input, useful for testing",

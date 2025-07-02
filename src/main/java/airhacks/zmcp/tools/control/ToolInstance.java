@@ -12,7 +12,6 @@ public record ToolInstance(Function<String,Map<String,String>> tool, String name
     
     public static Optional<ToolInstance> of(Function<String,Map<String,String>> tool) {
         var toolClass = tool.getClass();
-
         var toolSpecResult = fetchToolSpec(toolClass);
         if (toolSpecResult.isEmpty()) {
             Log.error("Tool " + toolClass.getName() + " does not have a tool spec");
