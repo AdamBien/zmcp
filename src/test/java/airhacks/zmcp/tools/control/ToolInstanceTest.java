@@ -50,4 +50,13 @@ public class ToolInstanceTest {
                 """;
         JSONAssertions.assertEquals(actual, expected);
     }
+
+    @Test
+    void fetchToolSpec() {
+        var toolDescription = ToolInstance.fetchToolSpec(EchoCall.class);
+        Assertions.assertThat(toolDescription).isPresent();
+        var toolDescriptionValue = toolDescription.get();
+        Assertions.assertThat(toolDescriptionValue.name()).isEqualTo("echo");
+    }
 }
+
