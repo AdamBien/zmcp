@@ -3,6 +3,9 @@ pure Java / zero dependency [MCP](https://modelcontextprotocol.io) implementatio
 
 A lightweight, zero-dependency implementation of the Model Context Protocol (MCP) in pure Java 21+.
 
+![MCP Duke](mcpduke.png)
+
+
 ## Features
 
 - Support for [**Prompts**](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts) - define reusable prompt templates with arguments
