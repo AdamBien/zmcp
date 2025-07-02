@@ -18,10 +18,8 @@ public class ToolInstanceTest {
         var toolDescriptionValue = toolDescription.get();
         Assertions.assertThat(toolDescriptionValue.name()).isEqualTo("echo");
         Assertions.assertThat(toolDescriptionValue.description()).isEqualTo("Echo the input, useful for testing");
-        var expectedInputSchema = ToolSpec.class
-                .getDeclaredMethod("inputSchema")
-                .getDefaultValue();
-        Assertions.assertThat(toolDescriptionValue.inputSchema()).isEqualTo(expectedInputSchema);
+        var expectedInputSchema = ToolSpec.defaultInputSchema();
+        JSONAssertions.assertEquals(expectedInputSchema,toolDescriptionValue.inputSchema());
     }
 
     @Test
