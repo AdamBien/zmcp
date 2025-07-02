@@ -4,30 +4,27 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.ServiceLoader.Provider;
+import java.util.function.Function;
 
-import airhacks.zmcp.tools.api.ToolInvocation;
+
 
 public interface ToolLocator {
 
     static Optional<ToolInstance> findTool(String name) {
-        return ServiceLoader.load(ToolInvocation.class)
+        return ServiceLoader.load(Function.class)
                 .stream()
                 .map(Provider::get)
                 .map(ToolInstance::of)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .filter(tool -> tool.hasName(name))
+                .flatMap(Optional::stream)
                 .findFirst();
-
     }
 
     static List<ToolInstance> all() {
-        return ServiceLoader.load(ToolInvocation.class)
+        return ServiceLoader.load(Function.class)
                 .stream()
                 .map(Provider::get)
                 .map(ToolInstance::of)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                .toList();
 
     }

@@ -6,14 +6,14 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import airhacks.zmcp.JSONAssertions;
-import airhacks.zmcp.tools.api.ToolSpec;
+import airhacks.zmcp.tools.entity.ToolSpec;
 
 public class ToolInstanceTest {
 
     @Test
     void creation() throws Exception {
         var tool = new EchoCall();
-        var toolDescription = ToolInstance.of(tool);
+        var toolDescription = ToolInstance.of(tool::apply);
         Assertions.assertThat(toolDescription).isPresent();
         var toolDescriptionValue = toolDescription.get();
         Assertions.assertThat(toolDescriptionValue.name()).isEqualTo("echo");
@@ -27,7 +27,7 @@ public class ToolInstanceTest {
     @Test
     void toJson() {
         var tool = new EchoCall();
-        var optionalInstance = ToolInstance.of(tool);
+        var optionalInstance = ToolInstance.of(tool::apply);
         assertThat(optionalInstance.isPresent()).isTrue();
         var toolInstance = optionalInstance.get();
         var actual = toolInstance.toJson();

@@ -1,15 +1,16 @@
 package airhacks.zmcp.tools.control;
 
-import airhacks.zmcp.tools.api.ToolExecutionResult;
-import airhacks.zmcp.tools.api.ToolInvocation;
-import airhacks.zmcp.tools.api.ToolSpec;
+import java.util.Map;
+import java.util.function.Function;
 
-public class ExceptionalCall implements ToolInvocation{
+public class ExceptionalCall implements Function<String, Map<String, String>> {
 
-    @ToolSpec(name = "error", description = "Throws an exception for testing")
-    public ToolExecutionResult use(String parameters) {
-        return ToolExecutionResult.error("This is an test execution error");
+    static Map<String, String> TOOL_SPEC = Map.of("name", "error",
+            "description", "Throws an exception for testing");
+
+    public Map<String, String> apply(String parameters) {
+        return Map.of("error", "true",
+                "content", "This is an test execution error");
     }
 
-    
 }
