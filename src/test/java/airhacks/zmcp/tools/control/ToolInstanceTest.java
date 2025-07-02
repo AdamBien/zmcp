@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import airhacks.zmcp.JSONAssertions;
 import airhacks.zmcp.tools.entity.ToolSpec;
+import airhacks.zmcp.tools.entity.ToolsResposeContent;
 
 public class ToolInstanceTest {
 
@@ -23,7 +24,7 @@ public class ToolInstanceTest {
     }
 
     @Test
-    void toJson() {
+    void toJsonWithInputSchema() {
         var tool = new EchoCall();
         var optionalInstance = ToolInstance.of(tool);
         assertThat(optionalInstance.isPresent()).isTrue();
@@ -46,6 +47,17 @@ public class ToolInstanceTest {
                     "description": "Echo the input, useful for testing"
                 }
                 """;
+        JSONAssertions.assertEquals(actual, expected);
+    }
+    
+    @Test
+    void defaulInputSchema() {
+        var tool = new ExceptionalCall();
+        var optionalInstance = ToolInstance.of(tool);
+        assertThat(optionalInstance.isPresent()).isTrue();
+        var toolInstance = optionalInstance.get();
+        var actual = toolInstance.inputSchema();
+        var expected = ToolSpec.defaultInputSchema();
         JSONAssertions.assertEquals(actual, expected);
     }
 

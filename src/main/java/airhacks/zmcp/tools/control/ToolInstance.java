@@ -9,6 +9,10 @@ import airhacks.zmcp.tools.entity.ToolSpec;
 
 
 public record ToolInstance(Function<String,Map<String,String>> tool, String name, String description, String inputSchema) {
+
+    public ToolInstance{
+        inputSchema = inputSchema == null || inputSchema.isBlank() ? ToolSpec.defaultInputSchema() : inputSchema;
+    }
     
     public static Optional<ToolInstance> of(Function<String,Map<String,String>> tool) {
         var toolClass = tool.getClass();
