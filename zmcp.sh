@@ -1,3 +1,3 @@
 #!/bin/sh
 BASEDIR=$(dirname $0)
-java -jar ${BASEDIR}/zmcp.jar "$@"
+java -cp ${BASEDIR}/zmcp.jar:${BASEDIR}/zmcp-* airhacks.App "$@"
