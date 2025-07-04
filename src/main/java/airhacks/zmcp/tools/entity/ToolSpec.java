@@ -9,7 +9,13 @@ public record ToolSpec(String name, String description, String inputSchema) {
     }
 
     public static ToolSpec of(Map<String, String> toolSpec) {
-        return new ToolSpec(toolSpec.get("name"), toolSpec.get("description"), toolSpec.get("inputSchema"));
+        var name = toolSpec.get("name");    
+        var description = toolSpec.get("description");
+        var inputSchema = toolSpec.getOrDefault("inputSchema",defaultInputSchema());
+        if (inputSchema == null) {
+            inputSchema = defaultInputSchema();
+        }
+        return new ToolSpec(name, description, inputSchema);
     }
 
     public static String defaultInputSchema() {
