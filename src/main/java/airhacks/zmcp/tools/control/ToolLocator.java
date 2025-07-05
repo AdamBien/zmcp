@@ -14,7 +14,12 @@ public interface ToolLocator {
                 .map(Provider::get)
                 .map(ToolInstance::of)
                 .flatMap(Optional::stream)
+                .filter(ti -> hasName(ti, name))
                 .findFirst();
+    }
+
+    static boolean hasName(ToolInstance toolInstance, String name) {
+        return toolInstance.hasName(name);
     }
 
     static List<ToolInstance> all() {
