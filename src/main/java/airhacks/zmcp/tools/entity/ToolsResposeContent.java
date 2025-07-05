@@ -22,4 +22,11 @@ public record ToolsResposeContent(String type, String content,boolean error) {
         return json.toString(1);
     }
 
+    public JSONObject toJsonObject() {
+        var json = new JSONObject();
+        json.put("type", type);
+        json.put("text", content);
+        return json;
+    }
+
 }

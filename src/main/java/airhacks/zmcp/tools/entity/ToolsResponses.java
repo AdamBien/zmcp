@@ -30,14 +30,15 @@ public interface ToolsResponses {
      */
     static String toolCallTextContent(int id, ToolsResposeContent response) {
         var header = JsonRPCResponses.header(id);
-        return """
-                {
-                    %s,
-                    "result": {
-                        "content": [%s],
-                        "isError": %s
-                    }
-                }
-                """.formatted(header, response.toJson(), response.error());
+        var jsonObject = new org.json.JSONObject();
+        jsonObject.put("jsonrpc", header.getString("jsonrpc"));
+        jsonObject.put("id", header.getInt("id"));
+        var result = new org.json.JSONObject();
+        var contentArray = new org.json.JSONArray();
+        contentArray.put(response.toJsonObject());
+        result.put("content", contentArray);
+        result.put("isError", response.error());
+        jsonObject.put("result", result);
+        return jsonObject.toString();
     }
 }

@@ -1,9 +1,8 @@
 package airhacks.zmcp;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.json.JSONObject;
 
 public interface JSONAssertions {
     

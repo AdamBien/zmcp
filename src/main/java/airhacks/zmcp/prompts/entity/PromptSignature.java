@@ -14,7 +14,7 @@ public record PromptSignature(String name, String description, List<PromptArgume
      * https://modelcontextprotocol.io/specification/2025-03-26/server/prompts#listing-prompts
      */
 
-    public String toJson() {
+    public JSONObject toJson() {
         var argumentsJson = arguments.stream()
         .map(PromptArgument::toJson)
         .toList();
@@ -22,7 +22,7 @@ public record PromptSignature(String name, String description, List<PromptArgume
         jsonObject.put("name", name);
         jsonObject.put("description", description);
         jsonObject.put("arguments", argumentsJson);
-        return jsonObject.toString();
+        return jsonObject;
     }
 
     public static PromptSignature fromJson(String json) {
