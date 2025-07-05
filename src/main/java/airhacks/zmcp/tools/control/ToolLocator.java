@@ -6,8 +6,6 @@ import java.util.ServiceLoader;
 import java.util.ServiceLoader.Provider;
 import java.util.function.Function;
 
-
-
 public interface ToolLocator {
 
     static Optional<ToolInstance> findTool(String name) {
@@ -25,9 +23,8 @@ public interface ToolLocator {
                 .map(Provider::get)
                 .map(ToolInstance::of)
                 .flatMap(Optional::stream)
-               .toList();
+                .toList();
 
     }
 
 }
- 
