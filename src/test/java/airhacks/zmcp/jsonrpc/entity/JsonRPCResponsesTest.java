@@ -9,10 +9,7 @@ public class JsonRPCResponsesTest {
     @Test
     public void header() {
         var actual = JsonRPCResponses.header(1);
-        var expected = """
-                    "jsonrpc": "2.0",
-                    "id": 1                    
-                """;
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.get("jsonrpc")).isEqualTo("2.0");
+        assertThat(actual.get("id")).isEqualTo(1);
     }
 }
