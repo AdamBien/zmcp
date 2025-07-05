@@ -18,8 +18,11 @@ public interface ToolLocator {
                 .findFirst();
     }
 
-    static boolean hasName(ToolInstance toolInstance, String name) {
-        return toolInstance.hasName(name);
+    static boolean hasName(Object toolInstance, String name) {
+        if (toolInstance instanceof ToolInstance ti) {
+            return ti.hasName(name);
+        }
+        return false;
     }
 
     static List<ToolInstance> all() {
