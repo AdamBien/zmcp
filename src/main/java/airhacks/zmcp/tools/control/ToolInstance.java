@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.json.JSONObject;
+
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.tools.entity.ToolSpec;
 
@@ -53,13 +55,11 @@ public record ToolInstance(Function<String,Map<String,String>> tool, String name
         }
     }
     public String toJson() {
-        return """
-            {
-                "name": "%s",
-                "description": "%s",
-                "inputSchema": %s
-            }
-        """.formatted(name, description, inputSchema);
+        var jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("description", description);
+        jsonObject.put("inputSchema", new JSONObject(inputSchema));
+        return jsonObject.toString();
     }
 
 }

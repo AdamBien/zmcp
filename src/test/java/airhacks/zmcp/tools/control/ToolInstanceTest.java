@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import airhacks.zmcp.JSONAssertions;
 import airhacks.zmcp.tools.entity.ToolSpec;
-import airhacks.zmcp.tools.entity.ToolsResposeContent;
 
 public class ToolInstanceTest {
 
@@ -67,6 +66,16 @@ public class ToolInstanceTest {
         Assertions.assertThat(toolDescription).isPresent();
         var toolDescriptionValue = toolDescription.get();
         Assertions.assertThat(toolDescriptionValue.name()).isEqualTo("echo");
+    }
+
+
+    @Test
+    void toJson() {
+        var tool = new EchoCall();
+        var optionalInstance = ToolInstance.of(tool);
+        assertThat(optionalInstance.isPresent()).isTrue();
+        var toolInstance = optionalInstance.get();
+        var actual = toolInstance.toJson();
     }
 }
 
