@@ -9,6 +9,7 @@ import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.router.boundary.RequestHandler;
 import airhacks.zmcp.router.entity.MCPRequest;
+import airhacks.zmcp.tools.control.ToolExecutionResult;
 import airhacks.zmcp.tools.control.ToolLocator;
 import airhacks.zmcp.tools.entity.ToolsMethods;
 import airhacks.zmcp.tools.entity.ToolsResponses;
@@ -61,24 +62,35 @@ public class ToolsSTDIOProtocol implements RequestHandler {
     private void handleInvokeTool(int id, JSONObject json) {
         var params = json.getJSONObject("params");
         var toolName = params.getString("name");
+
+        var result = executeTool(id, toolName, params.toString());
+        if (result.isEmpty()) {
+            return;
+        }
+        var callResult = result.get();
+        var content = callResult.content();
+        var responseContent = callResult.error() ? ToolsResposeContent.error(content) : ToolsResposeContent.text(content);
+        var response =  ToolsResponses.toolCallTextContent(id, responseContent);
+        messageSender.send(response);
+    }
+
+
+    Optional<ToolExecutionResult> executeTool(int id,String toolName, String params) {
         var toolInstance = ToolLocator.findTool(toolName);
         if (toolInstance.isEmpty()) {
             Log.error("Tool not found: " + toolName);
             messageSender.sendInvalidRequest(id, "Tool not found: " + toolName);
-            return;
+            return Optional.empty();
         }
         Log.info("tool found: " + toolName);
         var result = toolInstance.get().use(params.toString());
         if (result.emptyContent()) {
             Log.error("Error calling tool: " + toolName);
             messageSender.sendInvalidRequest(id, "Error calling tool: " + toolName);
-            return;
+            return Optional.empty();
         }
         Log.info("tools successfully called: " + toolName);
-        var callResult = result.content();
-        var responseContent = result.error() ? ToolsResposeContent.error(callResult) : ToolsResposeContent.text(callResult);
-        var response =  ToolsResponses.toolCallTextContent(id, responseContent);
-        messageSender.send(response);
+        return Optional.of(result);
     }
 
     void handleListTools(int id) {
