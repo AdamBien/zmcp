@@ -1,42 +1,38 @@
 package airhacks.zmcp.prompts.entity;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import airhacks.zmcp.jsonrpc.entity.JsonRPCResponses;
 
 public interface PromptResponses {
 
     static String listPrompts(int id, List<PromptSignature> prompts) {
-        var promptJson = prompts
-                .stream()
-                .map(PromptSignature::toJson)
-                .collect(Collectors.joining(","));
+        var promptJson = new JSONArray();
+        prompts.forEach(prompt -> promptJson.put(prompt.toJson()));
         var header = JsonRPCResponses.header(id);
-        return """
-                    {
-                    %s,
-                    "result": {
-                        "prompts": [
-                        %s
-                        ]
-                    }
-                }
-                """.formatted(header, promptJson);
+        var jsonObject = new org.json.JSONObject();
+        jsonObject.put("jsonrpc", header.getString("jsonrpc"));
+        jsonObject.put("id", header.getInt("id"));
+        var result = new org.json.JSONObject();
+        result.put("prompts", promptJson);
+        jsonObject.put("result", result);
+        return jsonObject.toString();
     }
 
-    static String getPrompt(int id, PromptInstance prompt) {
+    static JSONObject getPrompt(int id, PromptInstance prompt) {
         var header = JsonRPCResponses.header(id);
-        return """
-                    {
-                    %s,
-                    "result": {
-                        "description": "%s",
-                        "messages": [
-                            %s
-                        ]
-                    }
-                    }
-                    """.formatted(header, prompt.description(), prompt.message().toJson());
+        var jsonObject = new org.json.JSONObject();
+        jsonObject.put("jsonrpc", header.getString("jsonrpc"));
+        jsonObject.put("id", header.getInt("id"));
+        var result = new org.json.JSONObject();
+        var messages = new JSONArray();
+        messages.put(prompt.message().toJson());
+        result.put("description", prompt.description());
+        result.put("messages", messages);
+        jsonObject.put("result", result);
+        return jsonObject;
     }
 }
