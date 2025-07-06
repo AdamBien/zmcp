@@ -11,3 +11,9 @@ A lightweight, zero-dependency implementation of the Model Context Protocol (MCP
 - Support for [**Prompts**](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts) - define reusable prompt templates with arguments
 - Access to [**Resources**:](https://modelcontextprotocol.io/specification/2025-06-18/server/resources) - read and list files and directories
 - Integration with [**Tools**:](https://modelcontextprotocol.io/specification/2025-06-18/server/tools) - execute custom functions and operations
+
+## Tool Plugins
+
+MCP tools can be created as standalone JARs, independent of this project. 
+
+You can find a template/quick starter here: [zmcp tool](https://github.com/adamBien/zmcp-tool)
