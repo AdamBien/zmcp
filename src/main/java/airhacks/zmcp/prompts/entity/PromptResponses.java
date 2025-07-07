@@ -12,10 +12,7 @@ public interface PromptResponses {
     static String listPrompts(int id, List<PromptSignature> prompts) {
         var promptJson = new JSONArray();
         prompts.forEach(prompt -> promptJson.put(prompt.toJson()));
-        var header = JsonRPCResponses.header(id);
-        var jsonObject = new org.json.JSONObject();
-        jsonObject.put("jsonrpc", header.getString("jsonrpc"));
-        jsonObject.put("id", header.getInt("id"));
+        var jsonObject = JsonRPCResponses.response(id);
         var result = new org.json.JSONObject();
         result.put("prompts", promptJson);
         jsonObject.put("result", result);
@@ -23,10 +20,7 @@ public interface PromptResponses {
     }
 
     static JSONObject getPrompt(int id, PromptInstance prompt) {
-        var header = JsonRPCResponses.header(id);
-        var jsonObject = new org.json.JSONObject();
-        jsonObject.put("jsonrpc", header.getString("jsonrpc"));
-        jsonObject.put("id", header.getInt("id"));
+        var jsonObject = JsonRPCResponses.response(id);
         var result = new org.json.JSONObject();
         var messages = new JSONArray();
         messages.put(prompt.message().toJson());

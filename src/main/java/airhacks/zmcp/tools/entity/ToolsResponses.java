@@ -12,7 +12,7 @@ public interface ToolsResponses {
         var toolJson = tools.stream()
                 .map(ToolInstance::toJson)
                 .collect(Collectors.joining(","));
-        var header = JsonRPCResponses.header(id);
+        var header = JsonRPCResponses.response(id);
         return """
                     {
                     %s,
@@ -29,10 +29,7 @@ public interface ToolsResponses {
      * https://modelcontextprotocol.io/specification/2025-03-26/server/tools#calling-tools
      */
     static String toolCallTextContent(int id, ToolsResposeContent response) {
-        var header = JsonRPCResponses.header(id);
-        var jsonObject = new org.json.JSONObject();
-        jsonObject.put("jsonrpc", header.getString("jsonrpc"));
-        jsonObject.put("id", header.getInt("id"));
+        var jsonObject = JsonRPCResponses.response(id);
         var result = new org.json.JSONObject();
         var contentArray = new org.json.JSONArray();
         contentArray.put(response.toJsonObject());

@@ -6,13 +6,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import airhacks.zmcp.base.boundary.CoreSTDIOProtocol;
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.MessageSender;
+import airhacks.zmcp.router.entity.Capability;
 import airhacks.zmcp.router.entity.MCPRequest;
 
 public class FrontDoor {
@@ -86,14 +87,14 @@ public class FrontDoor {
         }
     }
 
-
-    String capabilities(){
-        return this.requestHandlers.stream()
+    JSONArray capabilities() {
+        var capabilities = this.requestHandlers.stream()
                 .map(RequestHandler::capability)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.joining(","));
-     
+                .map(Capability::toJSON)
+                .toList();
+        return new JSONArray(capabilities);
     }
 
 }

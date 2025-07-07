@@ -1,5 +1,6 @@
 package airhacks.zmcp.tools.boundary;
 
+
 import java.util.Optional;
 
 import org.json.JSONException;
@@ -8,6 +9,7 @@ import org.json.JSONObject;
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.router.boundary.RequestHandler;
+import airhacks.zmcp.router.entity.Capability;
 import airhacks.zmcp.router.entity.MCPRequest;
 import airhacks.zmcp.tools.control.ToolExecutionResult;
 import airhacks.zmcp.tools.control.ToolLocator;
@@ -101,13 +103,8 @@ public class ToolsSTDIOProtocol implements RequestHandler {
     }
 
     @Override
-    public Optional<String> capability() {
-        var capability = """
-                "tools": {
-                    "listChanged": true
-                }
-                """;
-        return Optional.of(capability);
+    public Optional<Capability> capability() {
+        return Optional.of(Capability.of("tools", true));
     }
 
 }

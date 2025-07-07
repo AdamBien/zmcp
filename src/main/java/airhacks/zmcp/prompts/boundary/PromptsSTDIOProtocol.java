@@ -12,6 +12,7 @@ import airhacks.zmcp.prompts.entity.PromptResponses;
 import airhacks.zmcp.prompts.entity.PromptsMethods;
 import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.router.boundary.RequestHandler;
+import airhacks.zmcp.router.entity.Capability;
 import airhacks.zmcp.router.entity.MCPRequest;
 
 public class PromptsSTDIOProtocol implements RequestHandler {
@@ -24,12 +25,9 @@ public class PromptsSTDIOProtocol implements RequestHandler {
         this.promptLoader = new PromptLoader(promptsDir);
     }
 
-    public Optional<String> capability() {
-        return Optional.of("""
-                            "prompts": {
-                            "listChanged": true
-                            }
-                """);
+    @Override
+    public Optional<Capability> capability() {
+        return Optional.of(Capability.of("prompts", true));
     }
 
     /**

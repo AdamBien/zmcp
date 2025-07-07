@@ -14,6 +14,7 @@ import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 import airhacks.zmcp.resources.entity.ResourcesMethods;
 import airhacks.zmcp.router.boundary.RequestHandler;
+import airhacks.zmcp.router.entity.Capability;
 import airhacks.zmcp.router.entity.MCPRequest;
 
 /**
@@ -40,7 +41,7 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
 
             var optionalProtocol = ResourcesMethods.fromString(method);
             if (optionalProtocol.isEmpty()) {
-                Log.error("Method not found: " + method);
+                Log.debug("Method not found: " + method);
                 return false;
             }
             var protocol = optionalProtocol.get();
@@ -117,18 +118,8 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
         messageSender.methodNotImplementedYet(id);
     }
 
-    public Optional<String> capability(){
-        var capability = """
-                    "resources": {
-                                "list": true,
-                                "read": true
-                            },
-                            "roots": {
-                                "list": true,
-                                "listChanged": true
-                            }
-                """;
-        return Optional.of(capability);
+    public Optional<Capability> capability(){
+        return Optional.of(Capability.of("resources", true));
     }
 
 
