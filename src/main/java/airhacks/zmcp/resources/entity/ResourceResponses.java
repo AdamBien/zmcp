@@ -18,20 +18,17 @@ public interface ResourceResponses {
      * @return
      */
     static JSONObject initialize(Integer id, String protocolVersion, List<Capability> capabilities) {
-
-        var result = JsonRPCResponses.response(id);
+        var response = JsonRPCResponses.response(id);
+        
+        var result = new JSONObject();
         result.put("protocolVersion", protocolVersion);
+        result.put("capabilities", capabilities(capabilities));
         
         var serverInfo = new JSONObject();
         serverInfo.put("name", "zmcp");
         serverInfo.put("version", App.VERSION);
         result.put("serverInfo", serverInfo);
         
-        result.put("capabilities", capabilities(capabilities));
-        
-        var response = new JSONObject();
-        response.put("jsonrpc", "2.0");
-        response.put("id", id);
         response.put("result", result);
         return response;
     }
