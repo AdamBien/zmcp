@@ -1,5 +1,7 @@
 package airhacks.zmcp.base.boundary;
 
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,6 +10,7 @@ import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 import airhacks.zmcp.router.boundary.RequestHandler;
+import airhacks.zmcp.router.entity.Capability;
 import airhacks.zmcp.router.entity.CoreMethods;
 import airhacks.zmcp.router.entity.MCPRequest;
 
@@ -17,9 +20,9 @@ public class CoreSTDIOProtocol implements RequestHandler {
 
     MessageSender messageSender;
 
-    JSONArray capabilities;
+    List<Capability> capabilities;
 
-    public CoreSTDIOProtocol(JSONArray capabilities) {
+    public CoreSTDIOProtocol(List<Capability> capabilities) {
         this.messageSender = new MessageSender();
         this.capabilities = capabilities;
     }

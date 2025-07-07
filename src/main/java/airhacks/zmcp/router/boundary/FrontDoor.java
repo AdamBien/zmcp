@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import airhacks.zmcp.base.boundary.CoreSTDIOProtocol;
@@ -87,14 +86,12 @@ public class FrontDoor {
         }
     }
 
-    JSONArray capabilities() {
-        var capabilities = this.requestHandlers.stream()
+    List<Capability> capabilities() {
+        return this.requestHandlers.stream()
                 .map(RequestHandler::capability)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(Capability::toJSON)
                 .toList();
-        return new JSONArray(capabilities);
     }
 
 }

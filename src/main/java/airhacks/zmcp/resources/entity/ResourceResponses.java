@@ -1,10 +1,13 @@
 package airhacks.zmcp.resources.entity;
 
+import java.util.List;
+
+import org.json.JSONObject;
+
 import airhacks.App;
 import airhacks.zmcp.jsonrpc.entity.JsonRPCResponses;
 import airhacks.zmcp.resources.control.FileAccess.FileResourceContent;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import airhacks.zmcp.router.entity.Capability;
 
 public interface ResourceResponses {
 
@@ -14,7 +17,7 @@ public interface ResourceResponses {
      * @param id
      * @return
      */
-    static JSONObject initialize(Integer id, String protocolVersion, JSONArray capabilities) {
+    static JSONObject initialize(Integer id, String protocolVersion, List<Capability> capabilities) {
 
         var result = JsonRPCResponses.response(id);
         result.put("protocolVersion", protocolVersion);
@@ -24,13 +27,23 @@ public interface ResourceResponses {
         serverInfo.put("version", App.VERSION);
         result.put("serverInfo", serverInfo);
         
-        result.put("capabilities", capabilities);
+        result.put("capabilities", capabilities(capabilities));
         
         var response = new JSONObject();
         response.put("jsonrpc", "2.0");
         response.put("id", id);
         response.put("result", result);
         return response;
+    }
+
+    static JSONObject capabilities(List<Capability> capabilities) {
+        var capabilitiesJson = new JSONObject();
+        capabilities.forEach(capability -> {
+            var capabilityObject = new JSONObject();
+            capabilityObject.put("listChanged", capability.listChanged());
+            capabilitiesJson.put(capability.name(), capabilityObject);
+        });
+        return capabilitiesJson;
     }
 
     static String listResources(Integer id, String resourcesJson) {

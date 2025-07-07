@@ -15,7 +15,6 @@ public record Capability(String name, boolean listChanged) {
     public  JSONObject toJSON(){
         var json = new JSONObject();
         var tools = new JSONObject();
-        json.put(this.name, tools);
         tools.put("listChanged", this.listChanged);
         return json;
     }
