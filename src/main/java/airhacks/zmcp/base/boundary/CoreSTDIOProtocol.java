@@ -1,5 +1,6 @@
 package airhacks.zmcp.base.boundary;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,9 +17,9 @@ public class CoreSTDIOProtocol implements RequestHandler {
 
     MessageSender messageSender;
 
-    String capabilities;
+    JSONArray capabilities;
 
-    public CoreSTDIOProtocol(String capabilities) {
+    public CoreSTDIOProtocol(JSONArray capabilities) {
         this.messageSender = new MessageSender();
         this.capabilities = capabilities;
     }
@@ -60,11 +61,11 @@ public class CoreSTDIOProtocol implements RequestHandler {
                     protocolVersion, clientName, clientVersion));
 
             if (!"2025-03-26".equals(protocolVersion)) {
-                Log.error("Unsupported protocol version: " + protocolVersion);
+                Log.debug("Unsupported protocol version: " + protocolVersion);
             }
 
             var initializeResponse = ResourceResponses.initialize(id, protocolVersion, this.capabilities);
-            messageSender.send(initializeResponse);
+            messageSender.send(initializeResponse.toString());
             this.isInitialized = true;
 
         } catch (JSONException e) {

@@ -25,6 +25,10 @@ public interface Log {
         append("💡 " + message);
     }
 
+    static void debug(String message){
+        append("🐛 [%s] %s".formatted(clazzName(), message));
+    }
+
     static void request(String message){
         append("👉 " + message);
     }
@@ -35,6 +39,10 @@ public interface Log {
 
     static void error(String message){
         append("❌ " + message);
+    }
+
+    static String clazzName(){
+        return Thread.currentThread().getStackTrace()[1].getClassName();
     }
 
 
