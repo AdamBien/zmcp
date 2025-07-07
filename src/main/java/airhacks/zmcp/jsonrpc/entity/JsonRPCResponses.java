@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 public interface JsonRPCResponses {
 
-    static JSONObject header(int id) {
+    static JSONObject response(int id) {
         var jsonObject = new org.json.JSONObject();
         jsonObject.put("jsonrpc", "2.0");
         jsonObject.put("id", id);
