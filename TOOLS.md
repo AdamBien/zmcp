@@ -1,5 +1,7 @@
 # Creating a zmcp Tool
 
+For a quick start, use the template project: [zmcp-tool](https://github.com/AdamBien/zmcp-tool)
+
 ## Steps
 
 1. **Create tool class** implementing `Function<Map<String,Object>, Map<String,String>>`
