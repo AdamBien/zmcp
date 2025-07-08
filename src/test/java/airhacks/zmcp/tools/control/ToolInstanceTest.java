@@ -76,6 +76,24 @@ public class ToolInstanceTest {
         assertThat(optionalInstance.isPresent()).isTrue();
         var toolInstance = optionalInstance.get();
         var actual = toolInstance.toJson();
+        var expected = """
+                {
+                    "name": "echo",
+                    "description": "Echo the input, useful for testing",
+                    "inputSchema": {
+                        "type": "object",
+                        "properties": {
+                            "input": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "input"
+                        ]
+                    }
+                }
+                """;
+        JSONAssertions.assertEquals(actual.toString(), expected);
     }
 }
 

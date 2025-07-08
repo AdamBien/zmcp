@@ -9,7 +9,10 @@ import org.json.JSONObject;
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.tools.entity.ToolSpec;
 
-
+/**
+ * A ToolInstance represents a LLM tool and is used to execute the tool.
+ * It is created from a tool function that takes an input and returns a result.
+ */
 public record ToolInstance(Function<String,Map<String,String>> tool, String name, String description, String inputSchema) {
 
     public ToolInstance{
