@@ -18,6 +18,10 @@ MCP tools can be created as standalone JARs, independent of this project.
 
 You can find a template/quick starter here: [zmcp tool](https://github.com/adamBien/zmcp-tool)
 
+Example tool implementations:
+- [zmcp-code-executor](https://github.com/AdamBien/zmcp-code-executor) - Execute code snippets
+- [zmcp-linkinfo-tool](https://github.com/AdamBien/zmcp-linkinfo-tool) - Extract link information
+
 For detailed instructions on creating tools, see [TOOLS.md](TOOLS.md)
 
 # Key Architectural Decisions
