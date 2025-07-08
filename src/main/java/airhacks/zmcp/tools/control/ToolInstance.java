@@ -54,12 +54,12 @@ public record ToolInstance(Function<String,Map<String,String>> tool, String name
             return Optional.empty();
         }
     }
-    public String toJson() {
+    public JSONObject toJson() {
         var jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("description", description);
         jsonObject.put("inputSchema", new JSONObject(inputSchema));
-        return jsonObject.toString();
+        return jsonObject;
     }
 
 }

@@ -46,7 +46,7 @@ public class ToolInstanceTest {
                     "description": "Echo the input, useful for testing"
                 }
                 """;
-        JSONAssertions.assertEquals(actual, expected);
+        JSONAssertions.assertEquals(actual.toString(), expected);
     }
     
     @Test
