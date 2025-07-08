@@ -13,13 +13,13 @@ import airhacks.zmcp.tools.entity.ToolSpec;
  * A ToolInstance represents a LLM tool and is used to execute the tool.
  * It is created from a tool function that takes an input and returns a result.
  */
-public record ToolInstance(Function<String,Map<String,String>> tool, String name, String description, String inputSchema) {
+public record ToolInstance(Function<Map<String,Object>,Map<String,String>> tool, String name, String description, String inputSchema) {
 
     public ToolInstance{
         inputSchema = inputSchema == null || inputSchema.isBlank() ? ToolSpec.defaultInputSchema() : inputSchema;
     }
     
-    public static Optional<ToolInstance> of(Function<String,Map<String,String>> tool) {
+    public static Optional<ToolInstance> of(Function<Map<String,Object>,Map<String,String>> tool) {
         var toolClass = tool.getClass();
         var toolSpecResult = fetchToolSpec(toolClass);
         if (toolSpecResult.isEmpty()) {
@@ -34,7 +34,7 @@ public record ToolInstance(Function<String,Map<String,String>> tool, String name
         return Optional.of(toolDescription);
     }
 
-    public ToolExecutionResult use(String input) {
+    public ToolExecutionResult use(Map<String,Object> input) {
         var result = tool.apply(input);
         return ToolExecutionResult.of(result);
     }

@@ -1,6 +1,7 @@
 package airhacks.zmcp.tools.boundary;
 
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.json.JSONException;
@@ -64,8 +65,8 @@ public class ToolsSTDIOProtocol implements RequestHandler {
     private void handleInvokeTool(int id, JSONObject json) {
         var params = json.getJSONObject("params");
         var toolName = params.getString("name");
-
-        var result = executeTool(id, toolName, params.toString());
+        var arguments = toolArguments(params);
+        var result = executeTool(id, toolName, arguments);
         if (result.isEmpty()) {
             return;
         }
@@ -76,8 +77,12 @@ public class ToolsSTDIOProtocol implements RequestHandler {
         messageSender.send(response);
     }
 
+    static Map<String,Object> toolArguments(JSONObject params){
+        var arguments = params.getJSONObject("arguments");
+        return arguments.toMap();
+    }
 
-    Optional<ToolExecutionResult> executeTool(int id,String toolName, String params) {
+    Optional<ToolExecutionResult> executeTool(int id,String toolName, Map<String,Object> arguments) {
         var toolInstance = ToolLocator.findTool(toolName);
         if (toolInstance.isEmpty()) {
             Log.error("Tool not found: " + toolName);
@@ -85,7 +90,7 @@ public class ToolsSTDIOProtocol implements RequestHandler {
             return Optional.empty();
         }
         Log.info("tool found: " + toolName);
-        var result = toolInstance.get().use(params.toString());
+        var result = toolInstance.get().use(arguments);
         if (result.emptyContent()) {
             Log.error("Error calling tool: " + toolName);
             messageSender.sendInvalidRequest(id, "Error calling tool: " + toolName);

@@ -35,7 +35,7 @@ public class ToolsResponsesTest {
     @Test
     void listTools() {
         var echoTool = new ToolInstance(
-            (input) -> Map.of("output", input),
+            (input) -> Map.of("output", input.get("input").toString()),
             "echo",
             "Echo the input, useful for testing",
             ToolSpec.defaultInputSchema()
