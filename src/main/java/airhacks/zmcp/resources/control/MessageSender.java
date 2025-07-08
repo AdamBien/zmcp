@@ -22,9 +22,8 @@ public class MessageSender {
 
 
     public void send(String jsonMessage) {
-        var strippedMessage = jsonMessage.replaceAll("\\s+", "");
-        Log.response(strippedMessage);
-        writer.println(strippedMessage);
+        Log.response(jsonMessage);
+        writer.println(jsonMessage);
     }
 
     public void sendInvalidJSONRPCRequestFormat(Integer id) {     
