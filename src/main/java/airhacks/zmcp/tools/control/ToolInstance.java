@@ -12,6 +12,9 @@ import airhacks.zmcp.tools.entity.ToolSpec;
 /**
  * A ToolInstance represents a LLM tool and is used to execute the tool.
  * It is created from a tool function that takes an input and returns a result.
+ * 
+ * Concrete tool implementations have to implement: 
+ * the {@link java.util.function.Function} with the following types <code>Function<Map<String,Object>,Map<String,String>></code>
  */
 public record ToolInstance(Function<Map<String,Object>,Map<String,String>> tool, String name, String description, String inputSchema) {
 

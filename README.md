@@ -23,7 +23,7 @@ You can find a template/quick starter here: [zmcp tool](https://github.com/adamB
   1. Plugin Architecture via Java SPI
 
   - Uses Java Service Provider Interface for dynamic tool discovery
-  - Tools implement `Function<String, Map<String, String>>`
+  - Tools implement `Function<Map<String,Object>, Map<String, String>>`
   - Enables runtime tool loading without hard dependencies
 
   2. Self-Describing Tools
