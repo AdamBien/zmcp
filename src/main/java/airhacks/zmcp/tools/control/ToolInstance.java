@@ -1,5 +1,6 @@
 package airhacks.zmcp.tools.control;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -53,13 +54,19 @@ public record ToolInstance(Function<Map<String,Object>,Map<String,String>> tool,
             var toolSpec = toolSpecField.get(null);
             return switch (toolSpec) {
                 case Map toolSpecMap -> Optional.of(ToolSpec.of(toolSpecMap));
-                default -> Optional.empty();
+                default -> unexpectedToolSpecType(toolSpecField);
             };
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             Log.error("Tool " + toolClass.getName() + " does not have a tool spec");
             return Optional.empty();
         }
     }
+    static Optional<ToolSpec> unexpectedToolSpecType(Field toolSpecField) {
+        var actualType = toolSpecField.getType().getName();
+        Log.error("Expected TOOL_SPEC type is Map<String,String>. Got: " + actualType);
+        return Optional.empty();
+    }
+
     public JSONObject toJson() {
         var jsonObject = new JSONObject();
         jsonObject.put("name", name);
