@@ -2,6 +2,9 @@ package airhacks.zmcp.tools.entity;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import airhacks.zmcp.jsonrpc.entity.JsonRPCResponses;
 import airhacks.zmcp.tools.control.ToolInstance;
 
@@ -11,9 +14,9 @@ public interface ToolsResponses {
         var toolInstances = tools.stream()
                 .map(ToolInstance::toJson)
                 .toList();
-        var toolInstancesArray = new org.json.JSONArray(toolInstances);
+        var toolInstancesArray = new JSONArray(toolInstances);
         var response = JsonRPCResponses.response(id);
-        var result = new org.json.JSONObject();
+        var result = new JSONObject();
         result.put("tools", toolInstancesArray);
         response.put("result", result);
         return response.toString();

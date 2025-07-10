@@ -23,7 +23,7 @@ public enum ToolsMethods implements RequestMethods {
     }
 
     public static Optional<ToolsMethods> fromString(String method) {
-        for (ToolsMethods protocol : values()) {
+        for (var protocol : values()) {
             if (protocol.method.equals(method)) {
                 return Optional.of(protocol);
             }

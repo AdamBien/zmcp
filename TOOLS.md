@@ -8,16 +8,21 @@ For a quick start, use the template project: [zmcp-tool](https://github.com/Adam
 
 2. **Add TOOL_SPEC field** with tool metadata and JSON schema:
    ```java
-   public static final Map<String, Object> TOOL_SPEC = Map.of(
+   public static final Map<String, String> TOOL_SPEC = Map.of(
        "name", "your-tool-name",
        "description", "Tool description",
-       "inputSchema", Map.of(
-           "type", "object",
-           "properties", Map.of(
-               "param1", Map.of("type", "string", "description", "Parameter description")
-           ),
-           "required", List.of("param1")
-       )
+       "inputSchema", """
+           {
+               "type": "object",
+               "properties": {
+                   "param1": {
+                       "type": "string",
+                       "description": "Parameter description"
+                   }
+               },
+               "required": ["param1"]
+           }
+           """
    );
    ```
 
@@ -38,4 +43,47 @@ For a quick start, use the template project: [zmcp-tool](https://github.com/Adam
 ```
 src/main/java/your/package/YourTool.java
 src/main/resources/META-INF/services/java.util.function.Function
+```
+
+## Complete Example
+
+```java
+package your.package;
+
+import java.util.Map;
+import java.util.function.Function;
+
+public class ExampleTool implements Function<Map<String, Object>, Map<String, String>> {
+
+    public static final Map<String, String> TOOL_SPEC = Map.of(
+        "name", "example-tool",
+        "description", "An example tool that processes text input",
+        "inputSchema", """
+            {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The text to process"
+                    },
+                    "uppercase": {
+                        "type": "boolean",
+                        "description": "Whether to convert to uppercase",
+                        "default": false
+                    }
+                },
+                "required": ["text"]
+            }
+            """
+    );
+
+    @Override
+    public Map<String, String> apply(Map<String, Object> input) {
+        var text = (String) input.get("text");
+        var uppercase = (Boolean) input.getOrDefault("uppercase", false);
+        
+        var result = uppercase ? text.toUpperCase() : text;
+        return Map.of("content", result);
+    }
+}
 ```
