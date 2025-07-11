@@ -49,7 +49,7 @@ public interface ResourceResponses {
                 {
                     %s,
                     "result": {
-                        "resources": [%s]
+                        "resources": %s
                     }
                 }"""
                 .formatted(response, resourcesJson);

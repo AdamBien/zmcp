@@ -2,7 +2,6 @@ package airhacks.zmcp.resources.boundary;
 
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +9,7 @@ import org.json.JSONObject;
 import airhacks.zmcp.base.control.MessageSender;
 import airhacks.zmcp.log.boundary.Log;
 import airhacks.zmcp.resources.control.FileAccess;
-import airhacks.zmcp.resources.entity.Resource;
+import airhacks.zmcp.resources.control.ResourceLister;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 import airhacks.zmcp.resources.entity.ResourcesMethods;
 import airhacks.zmcp.router.boundary.RequestHandler;
@@ -75,13 +74,11 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
 
     void handleListResources(Integer id) {
         Log.info("Handling list resources request");
-        var resources = this.fileAccess.listResources();
-        var resourcesJson = resources.stream()
-                .map(Resource::toJson)
-                .collect(Collectors.joining(","));
+        var resourcesJson = ResourceLister.listResourcesAsJson(this.fileAccess);
 
         Log.info("Sending list resources response");
-        messageSender.send(ResourceResponses.listResources(id, resourcesJson));
+        var response = ResourceResponses.listResources(id, resourcesJson);
+        messageSender.send(response);
     }
 
     /**
