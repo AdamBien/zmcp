@@ -7,7 +7,9 @@ import java.nio.file.Path;
 import org.json.JSONObject;
 
 import airhacks.zmcp.log.boundary.Log;
-
+/**
+ * represents a resource according to: https://modelcontextprotocol.io/docs/concepts/resources#resource-discovery
+ */
 public record Resource(
         String uri,
         String name,
