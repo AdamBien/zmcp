@@ -1,4 +1,4 @@
-package airhacks.zmcp.resources.control;
+package airhacks.zmcp.base.control;
 
 import java.io.PrintWriter;
 

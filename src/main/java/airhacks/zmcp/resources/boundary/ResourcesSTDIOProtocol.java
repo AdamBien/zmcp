@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import airhacks.zmcp.base.control.MessageSender;
 import airhacks.zmcp.log.boundary.Log;
-import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.resources.control.FileAccess;
 import airhacks.zmcp.resources.entity.Resource;
 import airhacks.zmcp.resources.entity.ResourceResponses;

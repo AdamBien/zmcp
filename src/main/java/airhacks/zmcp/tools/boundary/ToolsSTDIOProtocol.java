@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import airhacks.zmcp.base.control.MessageSender;
 import airhacks.zmcp.log.boundary.Log;
-import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.router.boundary.RequestHandler;
 import airhacks.zmcp.router.entity.Capability;
 import airhacks.zmcp.router.entity.MCPRequest;

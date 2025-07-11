@@ -2,12 +2,11 @@ package airhacks.zmcp.base.boundary;
 
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import airhacks.zmcp.base.control.MessageSender;
 import airhacks.zmcp.log.boundary.Log;
-import airhacks.zmcp.resources.control.MessageSender;
 import airhacks.zmcp.resources.entity.ResourceResponses;
 import airhacks.zmcp.router.boundary.RequestHandler;
 import airhacks.zmcp.router.entity.Capability;
