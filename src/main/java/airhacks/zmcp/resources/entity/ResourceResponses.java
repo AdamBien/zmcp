@@ -70,16 +70,31 @@ public interface ResourceResponses {
     static String readResource(int id, String uri, FileResourceContent resource) {
         var response = JsonRPCResponses.response(id);
         var result = new JSONObject();
-        result.put("contents", new JSONArray("""
-                [{
-                    "uri": "%s",
-                    "mimeType": "%s",
-                    "%s": %s
-                }]
-                """.formatted(uri, resource.mimeType(), 
-                             resource.isBlob() ? "blob" : "text", 
-                             resource.encodedContent())));
+        var contents = new JSONArray();
+        
+        var content = new JSONObject();
+        content.put("uri", uri);
+        content.put("mimeType", resource.mimeType());
+        
+        var contentKey = resource.isBlob() ? "blob" : "text";
+        var encodedContent = resource.encodedContent();
+        
+        if (resource.isBlob()) {
+            content.put(contentKey, encodedContent);
+        } else {
+            // For text content, encodedContent is already a quoted JSON string
+            // We need to parse it to get the actual string value
+            var jsonString = """
+                    {"temp": %s}
+                    """.formatted(encodedContent);
+            var temp = new JSONObject(jsonString);
+            content.put(contentKey, temp.getString("temp"));
+        }
+        
+        contents.put(content);
+        result.put("contents", contents);
         response.put("result", result);
+        
         return response.toString();
     }
 
