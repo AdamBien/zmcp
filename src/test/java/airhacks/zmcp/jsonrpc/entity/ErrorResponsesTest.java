@@ -20,7 +20,7 @@ public class ErrorResponsesTest {
                         "message": "Invalid params"
                     }
                 }""";
-        JSONAssertions.assertEquals(error, expected);
+        JSONAssertions.assertEquals(error.toString(), expected);
 
     }
 }

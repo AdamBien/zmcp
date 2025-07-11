@@ -10,7 +10,7 @@ import airhacks.zmcp.tools.control.ToolInstance;
 
 public interface ToolsResponses {
 
-    static String listTools(int id, List<ToolInstance> tools) {
+    static JSONObject listTools(int id, List<ToolInstance> tools) {
         var toolInstances = tools.stream()
                 .map(ToolInstance::toJson)
                 .toList();
@@ -19,20 +19,20 @@ public interface ToolsResponses {
         var result = new JSONObject();
         result.put("tools", toolInstancesArray);
         response.put("result", result);
-        return response.toString();
+        return response;
     }
 
     /**
      * https://modelcontextprotocol.io/specification/2025-03-26/server/tools#calling-tools
      */
-    static String toolCallTextContent(int id, ToolsResposeContent response) {
+    static JSONObject toolCallTextContent(int id, ToolsResposeContent response) {
         var jsonObject = JsonRPCResponses.response(id);
-        var result = new org.json.JSONObject();
-        var contentArray = new org.json.JSONArray();
+        var result = new JSONObject();
+        var contentArray = new JSONArray();
         contentArray.put(response.toJsonObject());
         result.put("content", contentArray);
         result.put("isError", response.error());
         jsonObject.put("result", result);
-        return jsonObject.toString();
+        return jsonObject;
     }
 }

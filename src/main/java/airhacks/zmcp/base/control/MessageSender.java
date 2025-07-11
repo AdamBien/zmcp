@@ -2,6 +2,8 @@ package airhacks.zmcp.base.control;
 
 import java.io.PrintWriter;
 
+import org.json.JSONObject;
+
 import airhacks.zmcp.jsonrpc.entity.ErrorResponses;
 import airhacks.zmcp.log.boundary.Log;
 
@@ -21,10 +23,13 @@ public class MessageSender {
     }
 
 
-    public void send(String jsonMessage) {
-        Log.response(jsonMessage);
-        writer.println(jsonMessage);
+
+    public void send(JSONObject jsonMessage) {
+        var message = jsonMessage.toString();
+        Log.response(message);
+        writer.println(message);
     }
+
 
     public void sendInvalidJSONRPCRequestFormat(Integer id) {     
         sendError(id, -32700, "Invalid JSON-RPC request format");

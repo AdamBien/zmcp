@@ -84,6 +84,6 @@ public class PromptsSTDIOProtocol implements RequestHandler {
         }
 
         var response = PromptResponses.getPrompt(id, prompt.get());
-        messageSender.send(response.toString());
+        messageSender.send(response);
     }
 }

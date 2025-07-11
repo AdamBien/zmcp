@@ -28,7 +28,7 @@ public class ToolsResponsesTest {
                     "jsonrpc": "2.0"
                 }
                     """;
-        JSONAssertions.assertEquals(actual, expected);
+        JSONAssertions.assertEquals(actual.toString(), expected);
 
     }
 
@@ -90,7 +90,7 @@ public class ToolsResponsesTest {
                     }
                 }""";
         
-        JSONAssertions.assertEquals(actual, expected);
+        JSONAssertions.assertEquals(actual.toString(), expected);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class ToolsResponsesTest {
                     }
                 }""";
         
-        JSONAssertions.assertEquals(actual, expected);
+        JSONAssertions.assertEquals(actual.toString(), expected);
     }
 
     @Test
@@ -145,6 +145,6 @@ public class ToolsResponsesTest {
                     }
                 }""";
         
-        JSONAssertions.assertEquals(actual, expected);
+        JSONAssertions.assertEquals(actual.toString(), expected);
     }
 }

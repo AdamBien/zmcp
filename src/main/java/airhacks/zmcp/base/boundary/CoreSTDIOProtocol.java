@@ -67,7 +67,7 @@ public class CoreSTDIOProtocol implements RequestHandler {
             }
 
             var initializeResponse = ResourceResponses.initialize(id, protocolVersion, this.capabilities);
-            messageSender.send(initializeResponse.toString());
+            messageSender.send(initializeResponse);
             this.isInitialized = true;
 
         } catch (JSONException e) {

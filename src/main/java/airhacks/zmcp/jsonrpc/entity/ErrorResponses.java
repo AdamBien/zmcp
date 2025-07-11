@@ -22,7 +22,7 @@ public interface ErrorResponses {
                 .formatted(id, message,supported,requested);
     }
 
-    static String error(int id, int code, String message) {
+    static JSONObject error(int id, int code, String message) {
         var jsonObject = new JSONObject();
         jsonObject.put("jsonrpc", "2.0");
         jsonObject.put("id", id);
@@ -32,6 +32,6 @@ public interface ErrorResponses {
         errorObject.put("message", message);
         jsonObject.put("error", errorObject);
         
-        return jsonObject.toString();
+        return jsonObject;
     }
 }

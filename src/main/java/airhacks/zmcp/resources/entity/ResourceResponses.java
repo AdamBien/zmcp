@@ -44,18 +44,18 @@ public interface ResourceResponses {
         return capabilitiesJson;
     }
 
-    static String listResources(Integer id, String resourcesJson) {
+    static JSONObject listResources(Integer id, String resourcesJson) {
         var response = JsonRPCResponses.response(id);
         var result = new JSONObject();
         result.put("resources", new JSONArray(resourcesJson));
         response.put("result", result);
-        return response.toString();
+        return response;
     }
 
-    static String ping(int id) {
+    static JSONObject ping(int id) {
         var response = JsonRPCResponses.response(id);
         response.put("method", "ping");
-        return response.toString();
+        return response;
     }
 
     /**
@@ -67,7 +67,7 @@ public interface ResourceResponses {
      * @param content
      * @return
      */
-    static String readResource(int id, String uri, FileResourceContent resource) {
+    static JSONObject readResource(int id, String uri, FileResourceContent resource) {
         var response = JsonRPCResponses.response(id);
         var result = new JSONObject();
         var contents = new JSONArray();
@@ -95,7 +95,7 @@ public interface ResourceResponses {
         result.put("contents", contents);
         response.put("result", result);
         
-        return response.toString();
+        return response;
     }
 
 
