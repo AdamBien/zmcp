@@ -2,6 +2,8 @@ package airhacks.zmcp.resources.control;
 
 import java.util.List;
 
+import org.json.JSONArray;
+
 import airhacks.zmcp.resources.entity.Resource;
 
 public interface ResourceLister {
@@ -12,10 +14,11 @@ public interface ResourceLister {
     }
 
     static String toJsonArray(List<Resource> resources) {
-        var jsonArray = resources.stream()
+        var jsonArray = new JSONArray();
+        resources.stream()
                 .map(Resource::toJson)
-                .toList();
+                .forEach(jsonArray::put);
         
-        return "[" + String.join(",", jsonArray) + "]";
+        return jsonArray.toString();
     }
 }

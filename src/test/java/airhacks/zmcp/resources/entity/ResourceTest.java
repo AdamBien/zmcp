@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -17,7 +16,7 @@ public class ResourceTest {
     @Test
     public void toJson() {
         var resource = new Resource("file:///home/duke/Coffee.java", "Coffee.java", "Coffee", "text/plain");
-        var actual = resource.toJson();
+        var actual = resource.toJson().toString();
         var expected = """
                    {
                   "uri": "file:///home/duke/Coffee.java",
@@ -124,8 +123,7 @@ public class ResourceTest {
             "application/sql"
         );
         
-        var json = resource.toJson();
-        var jsonObject = new JSONObject(json);
+        var jsonObject = resource.toJson();
         
         assertThat(jsonObject.getString("uri")).isEqualTo("postgres://database/customers/schema");
         assertThat(jsonObject.getString("name")).isEqualTo("customers");

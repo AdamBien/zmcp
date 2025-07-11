@@ -29,12 +29,12 @@ public record Resource(
         var title = name;
         return new Resource(uri, name, title, mimeType);
     }
-    public String toJson() {
+    public JSONObject toJson() {
         var json = new JSONObject();
         json.put("uri", uri());
         json.put("name", name());
         json.put("title", title());
         json.put("mimeType", mimeType());
-        return json.toString();
+        return json;
     }
 }
