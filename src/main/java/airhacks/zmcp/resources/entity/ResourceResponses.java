@@ -2,6 +2,7 @@ package airhacks.zmcp.resources.entity;
 
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import airhacks.App;
@@ -45,25 +46,16 @@ public interface ResourceResponses {
 
     static String listResources(Integer id, String resourcesJson) {
         var response = JsonRPCResponses.response(id);
-        return """
-                {
-                    %s,
-                    "result": {
-                        "resources": %s
-                    }
-                }"""
-                .formatted(response, resourcesJson);
+        var result = new JSONObject();
+        result.put("resources", new JSONArray(resourcesJson));
+        response.put("result", result);
+        return response.toString();
     }
 
     static String ping(int id) {
         var response = JsonRPCResponses.response(id);
-
-        return """
-                {
-                    %s,
-                    "method": "ping"
-                }"""
-                .formatted(response);
+        response.put("method", "ping");
+        return response.toString();
     }
 
     /**
@@ -76,23 +68,19 @@ public interface ResourceResponses {
      * @return
      */
     static String readResource(int id, String uri, FileResourceContent resource) {
-        var mimeType = resource.mimeType();
-        var encodedContent = resource.encodedContent();
-        var contentKey = resource.isBlob() ? "blob" : " text";
         var response = JsonRPCResponses.response(id);
-        return """
-                {
-                    %s,
-                    "result": {
-                        "contents": [
-                        {
-                            "uri": "%s",
-                            "mimeType": "%s",
-                            "%s": %s
-                        }
-                        ]
-                    }
-                    }""".formatted(response, uri, mimeType, contentKey, encodedContent);
+        var result = new JSONObject();
+        result.put("contents", new JSONArray("""
+                [{
+                    "uri": "%s",
+                    "mimeType": "%s",
+                    "%s": %s
+                }]
+                """.formatted(uri, resource.mimeType(), 
+                             resource.isBlob() ? "blob" : "text", 
+                             resource.encodedContent())));
+        response.put("result", result);
+        return response.toString();
     }
 
 
