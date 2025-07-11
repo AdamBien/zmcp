@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -124,11 +125,12 @@ public class ResourceTest {
         );
         
         var json = resource.toJson();
+        var jsonObject = new JSONObject(json);
         
-        assertThat(json).contains("\"uri\":\"postgres://database/customers/schema\"");
-        assertThat(json).contains("\"name\":\"customers\"");
-        assertThat(json).contains("\"title\":\"Customer Database Schema\"");
-        assertThat(json).contains("\"mimeType\":\"application/sql\"");
+        assertThat(jsonObject.getString("uri")).isEqualTo("postgres://database/customers/schema");
+        assertThat(jsonObject.getString("name")).isEqualTo("customers");
+        assertThat(jsonObject.getString("title")).isEqualTo("Customer Database Schema");
+        assertThat(jsonObject.getString("mimeType")).isEqualTo("application/sql");
     }
 
     @Test
