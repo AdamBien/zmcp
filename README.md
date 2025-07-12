@@ -32,6 +32,12 @@ For detailed instructions on creating tools, see [TOOLS.md](TOOLS.md)
    ```
    This creates `target/zmcp.jar` with all dependencies included.
 
+   **Optional**: Use [zb](https://github.com/adamBien/zb) for faster builds:
+   ```bash
+   zb.sh
+   ```
+   This creates a fat JAR in < 1s in the `.zbo` directory.
+
 2. **Set up the directory structure**:
    ```bash
    mkdir ~/zmcp
