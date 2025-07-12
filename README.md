@@ -24,6 +24,45 @@ Example tool implementations:
 
 For detailed instructions on creating tools, see [TOOLS.md](TOOLS.md)
 
+## Installation for Claude Desktop
+
+1. **Build the project** to create the JAR file:
+   ```bash
+   mvn clean package
+   ```
+   This creates `target/zmcp.jar` with all dependencies included.
+
+2. **Set up the directory structure**:
+   ```bash
+   mkdir ~/zmcp
+   cp target/zmcp.jar ~/zmcp/
+   cp zmcp.sh ~/zmcp/
+   chmod +x ~/zmcp/zmcp.sh
+   ```
+
+3. **Configure Claude Desktop** by adding zmcp to your MCP settings:
+   - Open Claude Desktop settings
+   - Add to your MCP configuration:
+   ```json
+   {
+     "mcpServers": {
+       "zmcp": {
+         "command": "/Users/[your-username]/zmcp/zmcp.sh",
+         "args": ["/path/to/resources", "/path/to/prompts"]
+       }
+     }
+   }
+   ```
+
+The `zmcp.sh` script:
+- Launches Java with the zmcp JAR from the same directory
+- Passes optional arguments for resource and prompt directories
+- Default directories: `.` for resources, `./prompts` for prompts
+
+The arguments are:
+- First argument: Resource directory path (default: current directory)
+- Second argument: Prompts directory path (default: ./prompts)
+
 # Key Architectural Decisions
 
   1. Plugin Architecture via Java SPI
