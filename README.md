@@ -21,6 +21,7 @@ You can find a template/quick starter here: [zmcp tool](https://github.com/adamB
 Example tool implementations:
 - [zmcp-code-executor](https://github.com/AdamBien/zmcp-code-executor) - Execute code snippets
 - [zmcp-linkinfo-tool](https://github.com/AdamBien/zmcp-linkinfo-tool) - Extract link information
+- [zmcp-filestore-tool](https://github.com/AdamBien/zmcp-filestore-tool) - Local file storage access
 
 For detailed instructions on creating tools, see [TOOLS.md](TOOLS.md)
 
