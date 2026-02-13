@@ -3,42 +3,99 @@ package org.json;
 /**
  * Configuration object for the JSON parser. The configuration is immutable.
  */
-public class JSONParserConfiguration extends ParserConfiguration {
+public class JSONParserConfiguration {
+    /**
+     * Used to indicate there's no defined limit to the maximum nesting depth when parsing a document.
+     */
+    public static final int UNDEFINED_MAXIMUM_NESTING_DEPTH = -1;
+
+    /**
+     * The default maximum nesting depth when parsing a document.
+     */
+    public static final int DEFAULT_MAXIMUM_NESTING_DEPTH = 512;
+
+    /**
+     * Specifies if values should be kept as strings (<code>true</code>), or if
+     * they should try to be guessed into JSON values (numeric, boolean, string).
+     */
+    boolean keepStrings;
+
+    /**
+     * The maximum nesting depth when parsing an object.
+     */
+    int maxNestingDepth;
+
     /**
      * Used to indicate whether to overwrite duplicate key or not.
      */
-    private boolean overwriteDuplicateKey;
-    
+    boolean overwriteDuplicateKey;
+
     /**
      * Used to indicate whether to convert java null values to JSONObject.NULL or ignoring the entry when converting java maps.
      */
-    private boolean useNativeNulls;
-
-    /**
-     * Configuration with the default values.
-     */
-    public JSONParserConfiguration() {
-        super();
-        this.overwriteDuplicateKey = false;
-        // DO NOT DELETE THE FOLLOWING LINE -- it is used for strictMode testing
-        // this.strictMode = true;
-    }
+    boolean useNativeNulls;
 
     /**
      * This flag, when set to true, instructs the parser to enforce strict mode when parsing JSON text.
      * Garbage chars at the end of the doc, unquoted string, and single-quoted strings are all disallowed.
      */
-    private boolean strictMode;
+    boolean strictMode;
+
+    /**
+     * Configuration with the default values.
+     */
+    public JSONParserConfiguration() {
+        this.keepStrings = false;
+        this.maxNestingDepth = DEFAULT_MAXIMUM_NESTING_DEPTH;
+        this.overwriteDuplicateKey = false;
+        this.useNativeNulls = false;
+        this.strictMode = false;
+        // DO NOT DELETE THE FOLLOWING LINE -- it is used for strictMode testing
+        // this.strictMode = true;
+    }
 
     @Override
     protected JSONParserConfiguration clone() {
-        JSONParserConfiguration clone = new JSONParserConfiguration();
-        clone.overwriteDuplicateKey = overwriteDuplicateKey;
-        clone.strictMode = strictMode;
-        clone.maxNestingDepth = maxNestingDepth;
-        clone.keepStrings = keepStrings;
-        clone.useNativeNulls = useNativeNulls;
+        var clone = new JSONParserConfiguration();
+        clone.keepStrings = this.keepStrings;
+        clone.maxNestingDepth = this.maxNestingDepth;
+        clone.overwriteDuplicateKey = this.overwriteDuplicateKey;
+        clone.useNativeNulls = this.useNativeNulls;
+        clone.strictMode = this.strictMode;
         return clone;
+    }
+
+    /**
+     * When parsing the XML into JSONML, specifies if values should be kept as strings (<code>true</code>), or if
+     * they should try to be guessed into JSON values (numeric, boolean, string).
+     *
+     * @return The <code>keepStrings</code> configuration value.
+     */
+    public boolean isKeepStrings() {
+        return this.keepStrings;
+    }
+
+    /**
+     * When parsing the XML into JSONML, specifies if values should be kept as strings (<code>true</code>), or if
+     * they should try to be guessed into JSON values (numeric, boolean, string)
+     *
+     * @param newVal new value to use for the <code>keepStrings</code> configuration option.
+     * @return The existing configuration will not be modified. A new configuration is returned.
+     */
+    public JSONParserConfiguration withKeepStrings(boolean newVal) {
+        var clone = this.clone();
+        clone.keepStrings = newVal;
+        return clone;
+    }
+
+    /**
+     * The maximum nesting depth that the parser will descend before throwing an exception
+     * when parsing an object (e.g. Map, Collection) into JSON-related objects.
+     *
+     * @return the maximum nesting depth set for this configuration
+     */
+    public int getMaxNestingDepth() {
+        return this.maxNestingDepth;
     }
 
     /**
@@ -46,15 +103,20 @@ public class JSONParserConfiguration extends ParserConfiguration {
      * when parsing a map into JSONObject or parsing a {@link java.util.Collection} instance into
      * JSONArray. The default max nesting depth is 512, which means the parser will throw a JsonException
      * if the maximum depth is reached.
+     * Using any negative value as a parameter is equivalent to setting no limit to the nesting depth,
+     * which means the parses will go as deep as the maximum call stack size allows.
      *
      * @param maxNestingDepth the maximum nesting depth allowed to the JSON parser
      * @return The existing configuration will not be modified. A new configuration is returned.
      */
-    @SuppressWarnings("unchecked")
-    @Override
-    public JSONParserConfiguration withMaxNestingDepth(final int maxNestingDepth) {
-        JSONParserConfiguration clone = this.clone();
-        clone.maxNestingDepth = maxNestingDepth;
+    public JSONParserConfiguration withMaxNestingDepth(int maxNestingDepth) {
+        var clone = this.clone();
+
+        if (maxNestingDepth > UNDEFINED_MAXIMUM_NESTING_DEPTH) {
+            clone.maxNestingDepth = maxNestingDepth;
+        } else {
+            clone.maxNestingDepth = UNDEFINED_MAXIMUM_NESTING_DEPTH;
+        }
 
         return clone;
     }
@@ -67,13 +129,12 @@ public class JSONParserConfiguration extends ParserConfiguration {
      * @param overwriteDuplicateKey defines should the parser overwrite duplicate keys.
      * @return The existing configuration will not be modified. A new configuration is returned.
      */
-    public JSONParserConfiguration withOverwriteDuplicateKey(final boolean overwriteDuplicateKey) {
-        JSONParserConfiguration clone = this.clone();
+    public JSONParserConfiguration withOverwriteDuplicateKey(boolean overwriteDuplicateKey) {
+        var clone = this.clone();
         clone.overwriteDuplicateKey = overwriteDuplicateKey;
-
         return clone;
     }
-    
+
     /**
      * Controls the parser's behavior when meeting Java null values while converting maps.
      * If set to true, the parser will put a JSONObject.NULL into the resulting JSONObject.
@@ -82,10 +143,9 @@ public class JSONParserConfiguration extends ParserConfiguration {
      * @param useNativeNulls defines if the parser should convert null values in Java maps
      * @return The existing configuration will not be modified. A new configuration is returned.
      */
-    public JSONParserConfiguration withUseNativeNulls(final boolean useNativeNulls) {
-        JSONParserConfiguration clone = this.clone();
+    public JSONParserConfiguration withUseNativeNulls(boolean useNativeNulls) {
+        var clone = this.clone();
         clone.useNativeNulls = useNativeNulls;
-
         return clone;
     }
 
@@ -95,6 +155,7 @@ public class JSONParserConfiguration extends ParserConfiguration {
      * When strict mode is enabled, the parser will throw a JSONException if it encounters an invalid character
      * immediately following the final ']' character in the input. This is useful for ensuring strict adherence to the
      * JSON syntax, as any characters after the final closing bracket of a JSON array are considered invalid.
+     *
      * @return a new JSONParserConfiguration instance with the updated strict mode setting
      */
     public JSONParserConfiguration withStrictMode() {
@@ -111,10 +172,9 @@ public class JSONParserConfiguration extends ParserConfiguration {
      * @param mode a boolean value indicating whether strict mode should be enabled or not
      * @return a new JSONParserConfiguration instance with the updated strict mode setting
      */
-    public JSONParserConfiguration withStrictMode(final boolean mode) {
-        JSONParserConfiguration clone = this.clone();
+    public JSONParserConfiguration withStrictMode(boolean mode) {
+        var clone = this.clone();
         clone.strictMode = mode;
-
         return clone;
     }
 
@@ -127,10 +187,10 @@ public class JSONParserConfiguration extends ParserConfiguration {
     public boolean isOverwriteDuplicateKey() {
         return this.overwriteDuplicateKey;
     }
-    
+
     /**
-     * The parser's behavior when meeting a null value in a java map, controls whether the parser should 
-     * write a JSON entry with a null value (<code>isUseNativeNulls() == true</code>) 
+     * The parser's behavior when meeting a null value in a java map, controls whether the parser should
+     * write a JSON entry with a null value (<code>isUseNativeNulls() == true</code>)
      * or ignore that map entry (<code>isUseNativeNulls() == false</code>).
      *
      * @return The <code>useNativeNulls</code> configuration value.
@@ -138,7 +198,6 @@ public class JSONParserConfiguration extends ParserConfiguration {
     public boolean isUseNativeNulls() {
         return this.useNativeNulls;
     }
-    
 
     /**
      * The parser throws an Exception when strict mode is true and tries to parse invalid JSON characters.
