@@ -4,7 +4,6 @@ package airhacks.zmcp.tools.boundary;
 import java.util.Map;
 import java.util.Optional;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import airhacks.zmcp.base.control.MessageSender;
@@ -48,7 +47,7 @@ public class ToolsSTDIOProtocol implements RequestHandler {
                 case TOOLS_LIST -> handleListTools(id);
                 case TOOLS_CALL -> handleInvokeTool(id, json);
             }
-        } catch (JSONException e) {
+        } catch (IllegalStateException e) {
             Log.error("Error parsing JSON request: " + e);
             messageSender.sendInvalidJSONRPCRequestFormat(id);
         } catch (Exception e) {

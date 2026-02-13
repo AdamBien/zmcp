@@ -2,7 +2,6 @@ package airhacks.zmcp.base.boundary;
 
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import airhacks.zmcp.base.control.MessageSender;
@@ -70,7 +69,7 @@ public class CoreSTDIOProtocol implements RequestHandler {
             messageSender.send(initializeResponse);
             this.isInitialized = true;
 
-        } catch (JSONException e) {
+        } catch (IllegalStateException e) {
             Log.error("Error parsing initialize request: " + e.getMessage());
             messageSender.sendError(id, -32602, "Invalid params: " + e.getMessage());
         }

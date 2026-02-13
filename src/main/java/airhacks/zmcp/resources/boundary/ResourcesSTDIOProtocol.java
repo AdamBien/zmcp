@@ -3,7 +3,6 @@ package airhacks.zmcp.resources.boundary;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import airhacks.zmcp.base.control.MessageSender;
@@ -52,7 +51,7 @@ public class ResourcesSTDIOProtocol implements RequestHandler {
                 case SUBSCRIBE -> handleSubscribe(id);
                 case UNSUBSCRIBE -> handleUnsubscribe(id);
             }
-        } catch (JSONException e) {
+        } catch (IllegalStateException e) {
             Log.error("Error parsing JSON request: " + e);
             messageSender.sendError(id, -32700, "Invalid JSON-RPC request format");
         } catch (Exception e) {

@@ -3,7 +3,6 @@ package airhacks.zmcp.prompts.boundary;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import airhacks.zmcp.base.control.MessageSender;
@@ -52,7 +51,7 @@ public class PromptsSTDIOProtocol implements RequestHandler {
                 case PROMPTS_LIST -> handleListPrompts(id);
                 case PROMPTS_GET -> handleGetPrompt(id, json);
             }
-        } catch (JSONException e) {
+        } catch (IllegalStateException e) {
             Log.error("Error parsing JSON request: " + e);
             messageSender.sendInvalidJSONRPCRequestFormat(id);
         } catch (Exception e) {
